@@ -1,5 +1,6 @@
 from sqlalchemy import Column, String, Enum
 from app.models.base_model import BaseModel
+from sqlalchemy.orm import relationship
 from app.enums import UserType
 
 
@@ -13,3 +14,6 @@ class User(BaseModel):
     address = Column(String(255), nullable=True)
 
     user_type = Column(Enum(UserType), nullable=False)
+
+    # Relationship
+    applications = relationship("Application", back_populates="adopter")
