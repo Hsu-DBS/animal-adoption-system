@@ -1,7 +1,7 @@
 from sqlalchemy import Column, String, Enum
 from app.models.base_model import BaseModel
 from sqlalchemy.orm import relationship
-from app.enums import UserType
+from app.models.enums import UserType
 
 
 class User(BaseModel):

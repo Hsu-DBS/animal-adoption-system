@@ -1,7 +1,7 @@
 from sqlalchemy import Column, ForeignKey, Integer, Text, Enum
 from sqlalchemy.orm import relationship
 from app.models.base_model import BaseModel
-from server.app.models.enums import ApplicationStatus
+from app.models.enums import ApplicationStatus
 
 
 class Application(BaseModel):

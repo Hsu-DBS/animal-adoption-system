@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, Text, Enum
 from sqlalchemy.orm import relationship
 from app.models.base_model import BaseModel
-from server.app.models.enums import AdoptionStatus
+from app.models.enums import AdoptionStatus
 
 
 class Animal(BaseModel):
