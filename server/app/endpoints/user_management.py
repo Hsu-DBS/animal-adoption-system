@@ -1,7 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Response, Query
 from sqlalchemy.orm import Session
 from app.db.database import get_db
-from app.schemas.user_schema import CreateAdminRequest, UpdateAdminRequest
 from app.utils.auth_util import hash_password
 from app.dependencies.auth_dependency import has_permission
 from app.models.enums import UserType
@@ -9,6 +8,11 @@ from app.models.user import User
 from datetime import datetime
 from app.utils.common_util import paginate_query
 from app.schemas.general_schema import GeneralResponse
+from app.schemas.user_schema import (
+    CreateAdminRequest,
+    UpdateAdminRequest,
+    CreateAdopterRequest,
+)
 
 
 router = APIRouter(prefix="/user-management", tags=["User Management"])
@@ -93,37 +97,22 @@ def get_user_by_id(
     )
 
 
-@router.post("/users", status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/users",
+    response_model=GeneralResponse,
+    status_code=status.HTTP_201_CREATED,
+)
 def create_user_admin(
     request_data: CreateAdminRequest, 
     db: Session = Depends(get_db),
     user_info = Depends(has_permission("Admin"))
 ):
-    # check if email exists
-    existing_user = db.query(User).filter(User.email == request_data.email).first()
-    if existing_user:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Email already registered"
-        )
-    
-    hashed_pw = hash_password(request_data.password)
+    new_user_id = _create_user(request_data, UserType.Admin, db)
 
-    new_user = User(
-        name=request_data.name,
-        email=request_data.email,
-        password=hashed_pw,
-        phone=request_data.phone,
-        address=request_data.address,
-        user_type=UserType.Admin,
-        created_by=user_info["username"]
+    return GeneralResponse(
+        message="Admin account created successfully",
+        data={"id": new_user_id}
     )
-
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
-
-    return {"message": "User created successfully", "id": new_user.id}
 
 
 @router.put("/users/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
@@ -196,3 +185,62 @@ def delete_user_admin(
     db.commit()
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+#===========================
+#     Adopter Endpoints
+#===========================
+
+
+@router.post(
+    "/adopters",
+    response_model=GeneralResponse,
+    status_code=status.HTTP_201_CREATED,
+)
+def create_user_adopter(
+    request_data: CreateAdopterRequest, 
+    db: Session = Depends(get_db),
+):
+    new_user_id = _create_user(request_data, UserType.Adopter, db)
+
+    return GeneralResponse(
+        message="Adopter account created successfully",
+        data={"id": new_user_id}
+    )
+
+
+#===========================
+#     Common Functions
+#===========================
+
+
+def _create_user(
+    request_data: dict, 
+    user_type: str, 
+    db: Session
+):
+    # Check duplicate email
+    existing_user = db.query(User).filter(User.email == request_data.email).first()
+    if existing_user:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Email already registered"
+        )
+
+    hashed_pw = hash_password(request_data.password)
+
+    new_user = User(
+        name=request_data.name,
+        email=request_data.email,
+        password=hashed_pw,
+        phone=request_data.phone,
+        address=request_data.address,
+        user_type=user_type,
+        created_by="System"
+    )
+
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+
+    return new_user.id
