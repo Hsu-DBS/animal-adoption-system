@@ -1,13 +1,13 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status, Depends
 from sqlalchemy.orm import Session
-from app.db.database import SessionLocal
+from app.db.database import SessionLocal, get_db
 from app.models.user import User
 from app.models.enums import UserType
 from app.schemas.login_schema import AdminLoginRequest
 from app.schemas.general_schema import GeneralResponse
 from app.utils.auth_util import create_access_token, verify_password
 
-router = APIRouter(prefix="/auth", tags=["Authentication"])
+router = APIRouter(prefix="/auth", tags=["Auth Management"])
 
 
 @router.post(
@@ -15,8 +15,10 @@ router = APIRouter(prefix="/auth", tags=["Authentication"])
     response_model=GeneralResponse,
     status_code=status.HTTP_200_OK
 )
-def admin_login_route(login_request_data: AdminLoginRequest):
-    db: Session = SessionLocal()
+def admin_login_route(
+    login_request_data: AdminLoginRequest,
+    db: Session = Depends(get_db)
+):
 
     try:
         # Find user
@@ -36,7 +38,7 @@ def admin_login_route(login_request_data: AdminLoginRequest):
         # Create JWT token
         access_token = create_access_token(
             {
-                "sub": user.id,
+                "sub": str(user.id),
                 "username": user.name,
                 "role": user.user_type,
             }
