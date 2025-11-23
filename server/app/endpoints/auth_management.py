@@ -11,6 +11,10 @@ from app.utils.auth_util import create_access_token, verify_password
 router = APIRouter(prefix="/auth", tags=["Auth Management"])
 
 
+#===========================
+#   Admin Login Endpoint
+#===========================
+
 @router.post(
     "/login/admin",
     response_model=GeneralResponse
