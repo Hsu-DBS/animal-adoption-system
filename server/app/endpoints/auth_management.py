@@ -1,21 +1,21 @@
 from fastapi import APIRouter, HTTPException, status, Depends
 from sqlalchemy.orm import Session
-from app.db.database import SessionLocal, get_db
+from app.db.database import get_db
 from app.models.user import User
 from app.models.enums import UserType
 from app.schemas.login_schema import AdminLoginRequest
 from app.schemas.general_schema import GeneralResponse
 from app.utils.auth_util import create_access_token, verify_password
 
+
 router = APIRouter(prefix="/auth", tags=["Auth Management"])
 
 
 @router.post(
     "/login/admin",
-    response_model=GeneralResponse,
-    status_code=status.HTTP_200_OK
+    response_model=GeneralResponse
 )
-def admin_login_route(
+def admin_login(
     login_request_data: AdminLoginRequest,
     db: Session = Depends(get_db)
 ):
