@@ -1,10 +1,10 @@
 from sqlalchemy import Column, Integer, String, Text, Enum
 from sqlalchemy.orm import relationship
-from app.models.base_model import BaseModel
+from app.models.base_model import CommonBase
 from app.models.enums import AdoptionStatus
 
 
-class Animal(BaseModel):
+class Animal(CommonBase):
     __tablename__ = "tbl_animals"
 
     name = Column(String(100), nullable=False)

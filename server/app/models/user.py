@@ -1,10 +1,10 @@
 from sqlalchemy import Column, String, Enum
-from app.models.base_model import BaseModel
+from app.models.base_model import CommonBase
 from sqlalchemy.orm import relationship
 from app.models.enums import UserType
 
 
-class User(BaseModel):
+class User(CommonBase):
     __tablename__ = "tbl_users"
 
     name = Column(String(100), nullable=False)

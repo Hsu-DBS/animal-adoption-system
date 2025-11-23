@@ -3,7 +3,7 @@ from app.db.database import Base
 from datetime import datetime
 
 
-class BaseModel(Base):
+class CommonBase(Base):
     __abstract__ = True
 
     id = Column(Integer, primary_key=True, index=True)

@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from app.db.database import SessionLocal
 from app.models.user import User
 from app.models.enums import UserType
-from app.schemas.user_schema import AdminLoginRequest
+from app.schemas.login_schema import AdminLoginRequest
 from app.schemas.general_schema import GeneralResponse
 from app.utils.auth_util import create_access_token, verify_password
 
