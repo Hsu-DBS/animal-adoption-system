@@ -91,3 +91,31 @@ def update_user_admin(
     db.commit()
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@router.delete("/users/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_user_admin(
+    user_id: int,
+    db: Session = Depends(get_db),
+    user_info = Depends(has_permission("Admin"))
+):
+    # Check if user exists
+    existing_user = db.query(User).filter(User.id == user_id).first()
+    if not existing_user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+
+    # Prevent deleting yourself
+    current_user_id = int(user_info["sub"])
+    if existing_user.id == current_user_id:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="You cannot delete your own account"
+        )
+
+    db.delete(existing_user)
+    db.commit()
+
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
