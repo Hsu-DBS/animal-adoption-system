@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Response
+from fastapi import APIRouter, Depends, HTTPException, status, Response, Query
 from sqlalchemy.orm import Session
 from app.db.database import get_db
 from app.schemas.user_schema import CreateAdminRequest, UpdateAdminRequest
@@ -7,6 +7,8 @@ from app.dependencies.auth_dependency import has_permission
 from app.models.enums import UserType
 from app.models.user import User
 from datetime import datetime
+from app.utils.common_util import paginate_query
+from app.schemas.general_schema import GeneralResponse
 
 
 router = APIRouter(prefix="/user-management", tags=["User Management"])
@@ -15,6 +17,48 @@ router = APIRouter(prefix="/user-management", tags=["User Management"])
 #===========================
 #      Admin Endpoints
 #===========================
+
+
+@router.get("/users", response_model=GeneralResponse)
+def get_all_users(
+    page: int = Query(1, ge=1, description="Page number must be greater than 0)"),
+    limit: int = Query(10, ge=1, le=100, description="Limit must be greater than 0"),
+    db: Session = Depends(get_db),
+    user_info = Depends(has_permission("Admin")),
+):
+    query = db.query(User).order_by(User.id.asc())
+
+    paginated_info = paginate_query(query, page, limit)
+
+    users = [
+        {
+            "id": user.id,
+            "name": user.name,
+            "email": user.email,
+            "phone": user.phone,
+            "address": user.address,
+            "user_type": user.user_type.value,
+            "created_at": user.created_at,
+            "created_by": user.created_by,
+            "updated_at": user.updated_at,
+            "updated_by": user.updated_by,
+        }
+        for user in paginated_info["query_data"]
+    ]
+
+    data_to_return = {
+        "page": paginated_info["page"],
+        "limit": paginated_info["limit"],
+        "total": paginated_info["total"],
+        "total_pages": paginated_info["total_pages"],
+        "data": users
+    }
+
+    return GeneralResponse(
+        message="Get all users successfully",
+        data=data_to_return
+    )
+
 
 @router.post("/users", status_code=status.HTTP_201_CREATED)
 def create_user_admin(
