@@ -60,6 +60,39 @@ def get_all_users(
     )
 
 
+@router.get("/users/{user_id}", response_model=GeneralResponse)
+def get_user_by_id(
+    user_id: int,
+    db: Session = Depends(get_db),
+    user_info = Depends(has_permission("Admin"))
+):
+    user = db.query(User).filter(User.id == user_id).first()
+
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+    
+    data_to_return = {
+        "id": user.id,
+        "name": user.name,
+        "email": user.email,
+        "phone": user.phone,
+        "address": user.address,
+        "user_type": user.user_type.value,
+        "created_at": user.created_at,
+        "created_by": user.created_by,
+        "updated_at": user.updated_at,
+        "updated_by": user.updated_by,
+    }
+
+    return GeneralResponse(
+        message="Get user by ID successfully",
+        data=data_to_return
+    )
+
+
 @router.post("/users", status_code=status.HTTP_201_CREATED)
 def create_user_admin(
     request_data: CreateAdminRequest, 
