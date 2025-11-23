@@ -24,39 +24,14 @@ router = APIRouter(prefix="/user-management", tags=["User Management"])
 
 
 @router.get("/users", response_model=GeneralResponse)
-def get_all_users(
+def get_all_admin_users(
     page: int = Query(1, ge=1, description="Page number must be greater than 0)"),
     limit: int = Query(10, ge=1, le=100, description="Limit must be greater than 0"),
     db: Session = Depends(get_db),
-    user_info = Depends(has_permission("Admin")),
+    _ = Depends(has_permission("Admin")),
 ):
-    query = db.query(User).order_by(User.id.asc())
 
-    paginated_info = paginate_query(query, page, limit)
-
-    users = [
-        {
-            "id": user.id,
-            "name": user.name,
-            "email": user.email,
-            "phone": user.phone,
-            "address": user.address,
-            "user_type": user.user_type.value,
-            "created_at": user.created_at,
-            "created_by": user.created_by,
-            "updated_at": user.updated_at,
-            "updated_by": user.updated_by,
-        }
-        for user in paginated_info["query_data"]
-    ]
-
-    data_to_return = {
-        "page": paginated_info["page"],
-        "limit": paginated_info["limit"],
-        "total": paginated_info["total"],
-        "total_pages": paginated_info["total_pages"],
-        "data": users
-    }
+    data_to_return = _get_all_users_by_role(page, limit, UserType.Admin.value, db)
 
     return GeneralResponse(
         message="Get all users successfully",
@@ -65,7 +40,7 @@ def get_all_users(
 
 
 @router.get("/users/{user_id}", response_model=GeneralResponse)
-def get_user_by_id(
+def get_admin_user_by_id(
     user_id: int,
     db: Session = Depends(get_db),
     user_info = Depends(has_permission("Admin"))
@@ -107,7 +82,7 @@ def create_user_admin(
     db: Session = Depends(get_db),
     user_info = Depends(has_permission("Admin"))
 ):
-    new_user_id = _create_user(request_data, UserType.Admin, db)
+    new_user_id = _create_new_account(request_data, UserType.Admin, db)
 
     return GeneralResponse(
         message="Admin account created successfully",
@@ -192,16 +167,32 @@ def delete_user_admin(
 #===========================
 
 
+@router.get("/adopters", response_model=GeneralResponse)
+def get_all_adopters(
+    page: int = Query(1, ge=1, description="Page number must be greater than 0)"),
+    limit: int = Query(10, ge=1, le=100, description="Limit must be greater than 0"),
+    db: Session = Depends(get_db),
+    _ = Depends(has_permission("Admin")),
+):
+
+    data_to_return = _get_all_users_by_role(page, limit, UserType.Adopter.value, db)
+
+    return GeneralResponse(
+        message="Get all adopters successfully",
+        data=data_to_return
+    )
+
+
 @router.post(
     "/adopters",
     response_model=GeneralResponse,
     status_code=status.HTTP_201_CREATED,
 )
-def create_user_adopter(
+def create_adopter(
     request_data: CreateAdopterRequest, 
     db: Session = Depends(get_db),
 ):
-    new_user_id = _create_user(request_data, UserType.Adopter, db)
+    new_user_id = _create_new_account(request_data, UserType.Adopter, db)
 
     return GeneralResponse(
         message="Adopter account created successfully",
@@ -214,7 +205,7 @@ def create_user_adopter(
 #===========================
 
 
-def _create_user(
+def _create_new_account(
     request_data: dict, 
     user_type: str, 
     db: Session
@@ -244,3 +235,40 @@ def _create_user(
     db.refresh(new_user)
 
     return new_user.id
+
+
+def _get_all_users_by_role(
+    page: int,
+    limit: int,
+    user_type: str,
+    db: Session,
+):
+    query = db.query(User).filter(User.user_type==user_type).order_by(User.id.asc())
+
+    paginated_info = paginate_query(query, page, limit)
+
+    users = [
+        {
+            "id": user.id,
+            "name": user.name,
+            "email": user.email,
+            "phone": user.phone,
+            "address": user.address,
+            "user_type": user.user_type.value,
+            "created_at": user.created_at,
+            "created_by": user.created_by,
+            "updated_at": user.updated_at,
+            "updated_by": user.updated_by,
+        }
+        for user in paginated_info["query_data"]
+    ]
+
+    data_to_return = {
+        "page": paginated_info["page"],
+        "limit": paginated_info["limit"],
+        "total": paginated_info["total"],
+        "total_pages": paginated_info["total_pages"],
+        "data": users
+    }
+
+    return data_to_return
