@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Enum
+from sqlalchemy import Column, String, Enum, Boolean
 from app.models.base_model import CommonBase
 from sqlalchemy.orm import relationship
 from app.models.enums import UserType
@@ -12,6 +12,7 @@ class User(CommonBase):
     password = Column(String(255), nullable=False)
     phone = Column(String(50), nullable=True)
     address = Column(String(255), nullable=True)
+    is_deleted = Column(Boolean, default=False, nullable=False)
 
     user_type = Column(Enum(UserType), nullable=False)
 

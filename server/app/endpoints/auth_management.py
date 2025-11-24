@@ -26,7 +26,10 @@ def admin_login(
 
     try:
         #find admin if exists or not
-        user = db.query(User).filter(User.email == login_request_data.email).first()
+        user = db.query(User).filter(
+            User.email == login_request_data.email,
+            User.is_deleted.is_(False)
+        ).first()
 
         if not user:
             raise HTTPException(status_code=400, detail="Invalid email")
@@ -72,7 +75,10 @@ def admin_login(
 
     try:
         # Find adopter if exists or not
-        adopter = db.query(User).filter(User.email == login_request_data.email).first()
+        adopter = db.query(User).filter(
+            User.email == login_request_data.email,
+            User.is_deleted.is_(False)
+        ).first()
 
         if not adopter:
             raise HTTPException(status_code=400, detail="Invalid email")

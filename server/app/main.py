@@ -1,11 +1,15 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from app.db.database import Base, engine
 from app.endpoints import (
     auth_router,
     user_router
 )
 
 app = FastAPI()
+
+# Create all tables on startup
+Base.metadata.create_all(bind=engine)
 
 # CORS CONFIGURATION
 app.add_middleware(

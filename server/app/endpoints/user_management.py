@@ -94,7 +94,11 @@ def delete_user_admin(
     user_info = Depends(has_permission("Admin"))
 ):
     # Check if user exists
-    existing_user = db.query(User).filter(User.id == user_id).first()
+    existing_user = db.query(User).filter(
+        User.id == user_id,
+        User.is_deleted.is_(False)
+    ).first()
+
     if not existing_user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -181,6 +185,45 @@ def update_adopter(
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
+@router.delete("/adopters/{adopter_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_adopter(
+    adopter_id: int,
+    db: Session = Depends(get_db),
+    user_info = Depends(has_permission(["Admin", "Adopter"])), # permit deletion for both admin and adopter roles
+):
+    
+    current_user_id = int(user_info["sub"])
+    current_user_role = user_info["role"]
+
+    # Check if user exists
+    existing_user = db.query(User).filter(
+        User.id == adopter_id,
+        User.is_deleted.is_(False),
+        User.user_type == UserType.Adopter.value,
+    ).first()
+
+    if not existing_user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+
+    # Adopter cannot delete another user
+    if current_user_role==UserType.Adopter.value and adopter_id != current_user_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You can only delete your own account"
+        )
+
+    existing_user.is_deleted = True
+    existing_user.updated_at = datetime.utcnow()
+    existing_user.updated_by = user_info["username"]
+
+    db.commit()
+
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
 #===========================
 #     Common Functions
 #===========================
@@ -208,6 +251,7 @@ def _create_new_account(
         phone=request_data.phone,
         address=request_data.address,
         user_type=user_type,
+        is_deleted=False,
         created_by="System"
     )
 
@@ -236,6 +280,7 @@ def _get_all_users_by_role(
             "phone": user.phone,
             "address": user.address,
             "user_type": user.user_type.value,
+            "is_deleted": user.is_deleted,
             "created_at": user.created_at,
             "created_by": user.created_by,
             "updated_at": user.updated_at,
@@ -278,6 +323,7 @@ def _get_user_by_ID(
         "phone": user.phone,
         "address": user.address,
         "user_type": user.user_type.value,
+        "is_deleted": user.is_deleted,
         "created_at": user.created_at,
         "created_by": user.created_by,
         "updated_at": user.updated_at,
@@ -298,6 +344,7 @@ def _update_user_by_ID(
     existing_user = db.query(User).filter(
         User.id == user_id,
         User.user_type == user_type,
+        User.is_deleted.is_(False)
     ).first()
 
     if not existing_user:
