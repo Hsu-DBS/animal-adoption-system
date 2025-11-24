@@ -43,28 +43,10 @@ def get_all_admin_users(
 def get_admin_user_by_id(
     user_id: int,
     db: Session = Depends(get_db),
-    user_info = Depends(has_permission("Admin"))
+    _ = Depends(has_permission("Admin"))
 ):
-    user = db.query(User).filter(User.id == user_id).first()
-
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found"
-        )
     
-    data_to_return = {
-        "id": user.id,
-        "name": user.name,
-        "email": user.email,
-        "phone": user.phone,
-        "address": user.address,
-        "user_type": user.user_type.value,
-        "created_at": user.created_at,
-        "created_by": user.created_by,
-        "updated_at": user.updated_at,
-        "updated_by": user.updated_by,
-    }
+    data_to_return = _get_user_by_ID(user_id, UserType.Admin.value, db)
 
     return GeneralResponse(
         message="Get user by ID successfully",
@@ -183,6 +165,21 @@ def get_all_adopters(
     )
 
 
+@router.get("/adopters/{adopter_id}", response_model=GeneralResponse)
+def get_adopter_by_id(
+    adopter_id: int,
+    db: Session = Depends(get_db),
+    _ = Depends(has_permission(["Admin", "Adopter"]))
+):
+    
+    data_to_return = _get_user_by_ID(adopter_id, UserType.Adopter.value, db)
+
+    return GeneralResponse(
+        message="Get adopter by ID successfully",
+        data=data_to_return
+    )
+
+
 @router.post(
     "/adopters",
     response_model=GeneralResponse,
@@ -269,6 +266,38 @@ def _get_all_users_by_role(
         "total": paginated_info["total"],
         "total_pages": paginated_info["total_pages"],
         "data": users
+    }
+
+    return data_to_return
+
+
+def _get_user_by_ID(
+    user_id: int,
+    user_type: str,
+    db: Session,
+):
+    user = db.query(User).filter(
+        User.id == user_id,
+        User.user_type == user_type
+    ).first()
+
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+    
+    data_to_return = {
+        "id": user.id,
+        "name": user.name,
+        "email": user.email,
+        "phone": user.phone,
+        "address": user.address,
+        "user_type": user.user_type.value,
+        "created_at": user.created_at,
+        "created_by": user.created_by,
+        "updated_at": user.updated_at,
+        "updated_by": user.updated_by,
     }
 
     return data_to_return

@@ -1,3 +1,4 @@
+from typing import List
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import jwt, JWTError
@@ -21,14 +22,16 @@ def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(securit
             detail="Invalid or expired token"
         )
 
-def has_permission(required_role: str):
+def has_permission(required_roles: str | List[str]):
+    if isinstance(required_roles, str):
+        required_roles = [required_roles]
+
     def dependency(user=Depends(get_current_user)):
-        if user["role"] != required_role:
+        if user["role"] not in required_roles:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
-                detail=f"{required_role} access only"
+                detail=f"Access denied. Allowed roles: {', '.join(required_roles)}"
             )
         return user
+
     return dependency
-
-
