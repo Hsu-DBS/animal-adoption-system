@@ -112,8 +112,11 @@ def delete_user_admin(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="You cannot delete your own account"
         )
+    
+    existing_user.is_deleted = True
+    existing_user.updated_at = datetime.utcnow()
+    existing_user.updated_by = user_info["username"]
 
-    db.delete(existing_user)
     db.commit()
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
