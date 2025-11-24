@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Response, Query
 from sqlalchemy.orm import Session
+from typing import Dict, Any
 from app.db.database import get_db
 from app.utils.auth_util import hash_password
 from app.dependencies.auth_dependency import has_permission
@@ -12,6 +13,7 @@ from app.schemas.user_schema import (
     CreateAdminRequest,
     UpdateAdminRequest,
     CreateAdopterRequest,
+    UpdateAdopterRequest,
 )
 
 
@@ -77,41 +79,10 @@ def update_user_admin(
     user_id: int,
     request_data: UpdateAdminRequest,
     db: Session = Depends(get_db),
-    user_info = Depends(has_permission("Admin"))
+    user_info = Depends(has_permission("Admin")),
 ):
 
-    existing_user = db.query(User).filter(User.id == user_id).first()
-    if not existing_user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found"
-        )
-
-    if request_data.name and request_data.name != existing_user.name: 
-        existing_user.name = request_data.name
-
-    if request_data.phone and request_data.phone != existing_user.phone: 
-        existing_user.phone = request_data.phone
-
-    if request_data.address and request_data.address != existing_user.address: 
-        existing_user.address = request_data.address
-
-    if request_data.password:
-        existing_user.password = hash_password(request_data.password)
-
-    if request_data.email and request_data.email != existing_user.email:
-        email_exists = db.query(User).filter(User.email == request_data.email).first()
-        if email_exists:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Email already registered"
-            )
-        existing_user.email = request_data.email
-
-    existing_user.updated_by = user_info["username"]
-    existing_user.updated_at = datetime.utcnow()
-
-    db.commit()
+    _ = _update_user_by_ID(user_id, request_data, UserType.Admin.value, db, user_info)
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
 
@@ -197,6 +168,19 @@ def create_adopter(
     )
 
 
+@router.put("/adopters/{adopter_id}", status_code=status.HTTP_204_NO_CONTENT)
+def update_adopter(
+    adopter_id: int,
+    request_data: UpdateAdopterRequest,
+    db: Session = Depends(get_db),
+    user_info = Depends(has_permission("Adopter")),
+):
+
+    _ = _update_user_by_ID(adopter_id, request_data, UserType.Adopter.value, db, user_info)
+
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
 #===========================
 #     Common Functions
 #===========================
@@ -278,7 +262,7 @@ def _get_user_by_ID(
 ):
     user = db.query(User).filter(
         User.id == user_id,
-        User.user_type == user_type
+        User.user_type == user_type,
     ).first()
 
     if not user:
@@ -301,3 +285,49 @@ def _get_user_by_ID(
     }
 
     return data_to_return
+
+
+def _update_user_by_ID(
+    user_id: int,
+    request_data: dict, 
+    user_type: str, 
+    db: Session,
+    user_info: Dict[str, Any],
+):
+    
+    existing_user = db.query(User).filter(
+        User.id == user_id,
+        User.user_type == user_type,
+    ).first()
+
+    if not existing_user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+
+    if request_data.name and request_data.name != existing_user.name: 
+        existing_user.name = request_data.name
+
+    if request_data.phone and request_data.phone != existing_user.phone: 
+        existing_user.phone = request_data.phone
+
+    if request_data.address and request_data.address != existing_user.address: 
+        existing_user.address = request_data.address
+
+    if request_data.password:
+        existing_user.password = hash_password(request_data.password)
+
+    if request_data.email and request_data.email != existing_user.email:
+        email_exists = db.query(User).filter(User.email == request_data.email).first()
+        if email_exists:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Email already registered"
+            )
+        existing_user.email = request_data.email
+
+    existing_user.updated_by = user_info["username"]
+    existing_user.updated_at = datetime.utcnow()
+
+    db.commit()

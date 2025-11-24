@@ -18,3 +18,7 @@ class UpdateAdminRequest(CreateAdminRequest):
 class CreateAdopterRequest(CreateAdminRequest):
     phone: str
     address: str
+
+
+class UpdateAdopterRequest(UpdateAdminRequest):
+    pass
