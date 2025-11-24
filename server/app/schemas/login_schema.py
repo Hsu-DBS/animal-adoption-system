@@ -5,3 +5,6 @@ class AdminLoginRequest(BaseModel):
     email: EmailStr
     password: str
 
+
+class AdopterLoginRequest(AdminLoginRequest):
+    pass
