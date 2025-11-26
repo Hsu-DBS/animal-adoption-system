@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Text, Enum
+from sqlalchemy import Column, Integer, String, Text, Enum, Boolean
 from sqlalchemy.orm import relationship
 from app.models.base_model import CommonBase
 from app.models.enums import AdoptionStatus
@@ -15,6 +15,7 @@ class Animal(CommonBase):
     description = Column(Text, nullable=True)
     photo_url = Column(String, nullable=False)
     adoption_status = Column(Enum(AdoptionStatus), nullable=False, default=AdoptionStatus.Available)
+    is_deleted = Column(Boolean, default=False, nullable=False)
 
     # Relationship
     applications = relationship("Application", back_populates="animal")

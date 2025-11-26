@@ -2,13 +2,14 @@ import os
 import json
 from dotenv import load_dotenv
 from datetime import datetime
-from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File, Form
+from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File, Form, Query
 from sqlalchemy.orm import Session
 from pydantic import ValidationError
 from app.db.database import get_db
 from app.models.animal import Animal
 from app.schemas.animal_schema import CreateAnimalRequest
 from app.schemas.general_schema import GeneralResponse
+from app.utils.common_util import paginate_query
 from app.dependencies.auth_dependency import has_permission
 
 
@@ -16,6 +17,61 @@ router = APIRouter(prefix="/animal-management", tags=["Animal Management"])
 
 load_dotenv()
 IMAGE_DIR = os.getenv("IMAGE_DIR")
+
+
+@router.get(
+    "/animals",
+    response_model=GeneralResponse,
+    status_code=status.HTTP_200_OK
+)
+def get_all_animals(
+    page: int = Query(1, ge=1, description="Page number must be greater than 0"),
+    limit: int = Query(10, ge=1, le=100, description="Limit must be between 1 and 100"),
+    db: Session = Depends(get_db),
+):
+
+    query = (
+        db.query(Animal)
+        .filter(Animal.is_deleted.is_(False))
+        .order_by(Animal.id.asc())
+    )
+
+    # Apply pagination
+    paginated_info = paginate_query(query, page, limit)
+
+    # Format animal data
+    animals = [
+        {
+            "id": animal.id,
+            "name": animal.name,
+            "species": animal.species,
+            "breed": animal.breed,
+            "age": animal.age,
+            "gender": animal.gender,
+            "description": animal.description,
+            "photo_url": animal.photo_url,
+            "adoption_status": animal.adoption_status.value,
+            "created_at": animal.created_at,
+            "created_by": animal.created_by,
+            "updated_at": animal.updated_at,
+            "updated_by": animal.updated_by,
+        }
+        for animal in paginated_info["query_data"]
+    ]
+
+    # Wrap pagination result
+    data_to_return = {
+        "page": paginated_info["page"],
+        "limit": paginated_info["limit"],
+        "total": paginated_info["total"],
+        "total_pages": paginated_info["total_pages"],
+        "data": animals
+    }
+
+    return GeneralResponse(
+        message="Get all animals successfully",
+        data=data_to_return
+    )
 
 
 @router.post(
@@ -97,6 +153,7 @@ def create_animal(
         description=request_data.description,
         photo_url=photo_url,
         adoption_status=request_data.adoption_status,
+        is_deleted=False,
         created_at=datetime.utcnow(),
         created_by=user_info["username"]
     )
@@ -115,3 +172,5 @@ def create_animal(
             "photo_url": new_animal.photo_url
         }
     )
+
+
