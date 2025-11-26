@@ -113,6 +113,7 @@ def delete_user_admin(
             detail="You cannot delete your own account"
         )
     
+    # Soft delete to retain user history, mark as deleted instead of removing from the database
     existing_user.is_deleted = True
     existing_user.updated_at = datetime.utcnow()
     existing_user.updated_by = user_info["username"]
@@ -218,6 +219,7 @@ def delete_adopter(
             detail="You can only delete your own account"
         )
 
+    # Soft delete to retain user history, mark as deleted instead of removing from the database
     existing_user.is_deleted = True
     existing_user.updated_at = datetime.utcnow()
     existing_user.updated_by = user_info["username"]
