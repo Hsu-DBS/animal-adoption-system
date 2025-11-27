@@ -28,6 +28,7 @@ def get_all_animals(
     page: int = Query(1, ge=1, description="Page number must be greater than 0"),
     limit: int = Query(10, ge=1, le=100, description="Limit must be between 1 and 100"),
     db: Session = Depends(get_db),
+    _ = Depends(has_permission(["Admin", "Adopter"])),
 ):
 
     query = (
@@ -71,6 +72,56 @@ def get_all_animals(
     return GeneralResponse(
         message="Get all animals successfully",
         data=data_to_return
+    )
+
+
+@router.get(
+    "/animals/{animal_id}",
+    response_model=GeneralResponse,
+    status_code=status.HTTP_200_OK
+)
+def get_animal_by_id(
+    animal_id: int,
+    db: Session = Depends(get_db),
+    _ = Depends(has_permission(["Admin", "Adopter"])),
+):
+    # Get animal that is not soft-deleted
+    animal = (
+        db.query(Animal)
+        .filter(
+            Animal.id == animal_id,
+            Animal.is_deleted.is_(False)
+        )
+        .first()
+    )
+
+    # If no matching animal found
+    if not animal:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Animal not found"
+        )
+
+    # Format response data
+    animal_info = {
+        "id": animal.id,
+        "name": animal.name,
+        "species": animal.species,
+        "breed": animal.breed,
+        "age": animal.age,
+        "gender": animal.gender,
+        "description": animal.description,
+        "photo_url": animal.photo_url,
+        "adoption_status": animal.adoption_status.value,
+        "created_at": animal.created_at,
+        "created_by": animal.created_by,
+        "updated_at": animal.updated_at,
+        "updated_by": animal.updated_by,
+    }
+
+    return GeneralResponse(
+        message="Animal retrieved successfully",
+        data=animal_info
     )
 
 
