@@ -229,7 +229,7 @@ def create_animal(
     "/animals/{animal_id}",
     status_code=status.HTTP_204_NO_CONTENT,
 )
-def update_animal(
+def update_animal_by_ID(
     animal_id: int,
     request_data: str | None = Form(None),
     animal_image: UploadFile | None = File(None),
@@ -315,5 +315,42 @@ def update_animal(
 
     db.commit()
     db.refresh(animal)
+
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@router.delete(
+    "/animals/{animal_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+def delete_animal_by_id(
+    animal_id: int,
+    db: Session = Depends(get_db),
+    user_info = Depends(has_permission("Admin"))
+):
+    
+    # Find animal that is not already soft deleted
+    animal = (
+        db.query(Animal)
+        .filter(
+            Animal.id == animal_id,
+            Animal.is_deleted.is_(False)
+        )
+        .first()
+    )
+
+    # If no matching animal found, return 404
+    if not animal:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Animal not found"
+        )
+
+    # Apply soft delete
+    animal.is_deleted = True
+    animal.updated_at = datetime.utcnow()
+    animal.updated_by = user_info["username"]
+
+    db.commit()
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
