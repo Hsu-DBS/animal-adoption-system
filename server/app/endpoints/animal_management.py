@@ -2,12 +2,12 @@ import os
 import json
 from dotenv import load_dotenv
 from datetime import datetime
-from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File, Form, Query
+from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File, Form, Query, Response
 from sqlalchemy.orm import Session
 from pydantic import ValidationError
 from app.db.database import get_db
 from app.models.animal import Animal
-from app.schemas.animal_schema import CreateAnimalRequest
+from app.schemas.animal_schema import CreateAnimalRequest, UpdateAnimalRequest
 from app.schemas.general_schema import GeneralResponse
 from app.utils.common_util import paginate_query
 from app.dependencies.auth_dependency import has_permission
@@ -225,3 +225,95 @@ def create_animal(
     )
 
 
+@router.put(
+    "/animals/{animal_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+def update_animal(
+    animal_id: int,
+    request_data: str | None = Form(None),
+    animal_image: UploadFile | None = File(None),
+    db: Session = Depends(get_db),
+    user_info = Depends(has_permission("Admin"))
+):
+    
+    update_data = None
+
+    if request_data:
+        try:
+            request_dict = json.loads(request_data) # Parse raw JSON string into dict
+            update_data = UpdateAnimalRequest(**request_dict) # Validate fields using Pydantic
+        except json.JSONDecodeError:
+            raise HTTPException(400, "Invalid JSON format")
+        except ValidationError as e:
+            raise HTTPException(422, detail=e.errors())
+
+    # Get existing animal
+    animal = (
+        db.query(Animal)
+        .filter(
+            Animal.id == animal_id,
+            Animal.is_deleted.is_(False)
+        )
+        .first()
+    )
+
+    if not animal:
+        raise HTTPException(
+            status_code=404,
+            detail="Animal not found"
+        )
+
+    # Handle image upload
+    if animal_image:
+        # Validate extension
+        filename = animal_image.filename
+        ext = filename.split(".")[-1].lower()
+        if ext not in ["jpg", "jpeg", "png", "webp"]:
+            raise HTTPException(
+                status_code=400,
+                detail="Only .jpg, .jpeg, .png, .webp allowed"
+            )
+
+        # Save new image file
+        os.makedirs(IMAGE_DIR, exist_ok=True)
+        new_filename = f"{int(datetime.utcnow().timestamp())}_{filename}"
+        new_file_path = os.path.join(IMAGE_DIR, new_filename)
+
+        with open(new_file_path, "wb") as f:
+            f.write(animal_image.file.read())
+
+        # Build new URL
+        animal.photo_url = f"/images/{new_filename}"
+
+    # Update animal fields
+    if update_data:
+
+        if update_data.name and animal.name != update_data.name:
+            animal.name = update_data.name
+        
+        if update_data.species and animal.species != update_data.species:
+            animal.species = update_data.species
+
+        if update_data.breed and animal.breed != update_data.breed:  
+            animal.breed = update_data.breed
+        
+        if update_data.age and animal.age != update_data.age:  
+            animal.age = update_data.age
+
+        if update_data.gender and animal.gender != update_data.gender:
+            animal.gender = update_data.gender
+
+        if update_data.description and animal.description != update_data.description:
+            animal.description = update_data.description
+        
+        if update_data.adoption_status and animal.description != update_data.adoption_status:
+            animal.adoption_status = update_data.adoption_status
+
+    animal.updated_at = datetime.utcnow()
+    animal.updated_by = user_info["username"]
+
+    db.commit()
+    db.refresh(animal)
+
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
