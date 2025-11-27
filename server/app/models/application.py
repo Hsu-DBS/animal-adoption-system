@@ -1,4 +1,4 @@
-from sqlalchemy import Column, ForeignKey, Integer, Text, Enum
+from sqlalchemy import Column, ForeignKey, Integer, Text, Enum, Boolean
 from sqlalchemy.orm import relationship
 from app.models.base_model import CommonBase
 from app.models.enums import ApplicationStatus
@@ -12,6 +12,7 @@ class Application(CommonBase):
 
     application_status = Column(Enum(ApplicationStatus), nullable=False, default=ApplicationStatus.Submitted)
     reason = Column(Text, nullable=True)
+    is_deleted = Column(Boolean, default=False, nullable=False)
 
     # Relationships
     animal = relationship("Animal", back_populates="applications")

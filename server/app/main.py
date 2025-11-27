@@ -5,6 +5,7 @@ from app.endpoints import (
     auth_router,
     user_router,
     animal_router,
+    application_router,
 )
 
 app = FastAPI()
@@ -25,6 +26,7 @@ app.add_middleware(
 app.include_router(auth_router)
 app.include_router(user_router)
 app.include_router(animal_router)
+app.include_router(application_router)
 
 @app.get("/")
 def read_root():

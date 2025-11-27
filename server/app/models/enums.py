@@ -17,3 +17,4 @@ class ApplicationStatus(str, Enum):
     Submitted = "Submitted"
     Approved = "Approved"
     Rejected = "Rejected"
+    Cancelled = "Cancelled"
