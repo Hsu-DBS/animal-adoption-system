@@ -56,12 +56,55 @@ def get_all_applications(
         "limit": paginated["limit"],
         "total": paginated["total"],
         "total_pages": paginated["total_pages"],
-        "data": applications
+        "applications": applications
     }
 
     return GeneralResponse(
         message="Applications retrieved successfully",
         data=data_to_return
+    )
+
+
+@router.get(
+    "/applications/current-adopter",
+    response_model=GeneralResponse,
+    status_code=status.HTTP_200_OK
+)
+def get_applications_of_current_adopter(
+    db: Session = Depends(get_db),
+    user_info = Depends(has_permission("Adopter"))
+):
+    adopter_id = int(user_info["sub"])
+
+    # Get all active applications for current login adopter
+    applications = (
+        db.query(Application)
+        .filter(
+            Application.adopter_id == adopter_id,
+            Application.is_deleted.is_(False)
+        )
+        .order_by(Application.id.asc())
+        .all()
+    )
+
+    application_list = [
+        {
+            "id": app.id,
+            "animal_id": app.animal_id,
+            "animal_name": app.animal.name,
+            "status": app.application_status.value,
+            "reason": app.reason,
+            "created_at": app.created_at,
+            "created_by": app.created_by,
+            "updated_at": app.updated_at,
+            "updated_by": app.updated_by,
+        }
+        for app in applications
+    ]
+
+    return GeneralResponse(
+        message="Applications retrieved successfully",
+        data={"applications": application_list}
     )
 
 
