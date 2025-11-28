@@ -3,11 +3,10 @@ from sqlalchemy.orm import Session
 from app.db.database import get_db
 from app.models.application import Application
 from app.models.animal import Animal
-from app.models.enums import ApplicationStatus
+from app.models.enums import ApplicationStatus, UserType
 from app.schemas.general_schema import GeneralResponse
 from app.dependencies.auth_dependency import has_permission
 from datetime import datetime
-from pydantic import BaseModel, ValidationError
 from app.schemas.application_schema import CreateApplicationRequest
 from app.utils.common_util import paginate_query
 
@@ -17,7 +16,6 @@ router = APIRouter(prefix="/application-management", tags=["Application Manageme
 @router.get(
     "/applications",
     response_model=GeneralResponse,
-    status_code=status.HTTP_200_OK
 )
 def get_all_applications(
     page: int = Query(1, ge=1, description="Page number must be >= 1"),
@@ -68,7 +66,6 @@ def get_all_applications(
 @router.get(
     "/applications/current-adopter",
     response_model=GeneralResponse,
-    status_code=status.HTTP_200_OK
 )
 def get_applications_of_current_adopter(
     db: Session = Depends(get_db),
@@ -105,6 +102,62 @@ def get_applications_of_current_adopter(
     return GeneralResponse(
         message="Applications retrieved successfully",
         data={"applications": application_list}
+    )
+
+
+@router.get(
+    "/applications/{application_id}",
+    response_model=GeneralResponse,
+)
+def get_application_by_id(
+    application_id: int,
+    db: Session = Depends(get_db),
+    user_info = Depends(has_permission(["Admin", "Adopter"]))  #allow access for admin and adopter roles
+):
+    # Get application
+    application = (
+        db.query(Application)
+        .filter(
+            Application.id == application_id,
+            Application.is_deleted.is_(False)
+        )
+        .first()
+    )
+
+    if not application:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Application not found"
+        )
+
+    # If adopter, only allow viewing their own application
+    role = user_info["role"]
+    current_user_id = int(user_info["sub"])
+
+    if role == UserType.Adopter.value and application.adopter_id != current_user_id:
+        raise HTTPException(
+            status_code=403,
+            detail="You are not allowed to view this application"
+        )
+
+    # response data
+    app_info = {
+        "id": application.id,
+        "animal_id": application.animal_id,
+        "animal_name": application.animal.name,
+        "adopter_id": application.adopter_id,
+        "adopter_name": application.adopter.name,
+        "reason": application.reason,
+        "status": application.application_status.value,
+        "created_at": application.created_at,
+        "created_by": application.created_by,
+        "updated_at": application.updated_at,
+        "updated_by": application.updated_by,
+    }
+
+    return GeneralResponse(
+        message="Application retrieved successfully",
+        data=app_info
     )
 
 
