@@ -230,6 +230,56 @@ def delete_adopter(
 
 
 #===========================
+#     Common Endpoint
+#===========================
+
+
+@router.get(
+    "/current-user",
+    response_model=GeneralResponse
+)
+def get_current_user_info(
+    user_info = Depends(has_permission(["Admin", "Adopter"])),  # allow both roles
+    db: Session = Depends(get_db)
+):
+    current_user_id = int(user_info["sub"])
+
+    # fetch current user from DB
+    user = (
+        db.query(User)
+        .filter(
+            User.id == current_user_id,
+            User.is_deleted.is_(False)
+        )
+        .first()
+    )
+
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+
+    user_data = {
+        "id": user.id,
+        "name": user.name,
+        "email": user.email,
+        "phone": user.phone,
+        "address": user.address,
+        "role": user.user_type.value,
+        "created_at": user.created_at,
+        "created_by": user.created_by,
+        "updated_at": user.updated_at,
+        "updated_by": user.updated_by,
+    }
+
+    return GeneralResponse(
+        message="User information retrieved successfully",
+        data=user_data
+    )
+
+
+#===========================
 #     Common Functions
 #===========================
 
