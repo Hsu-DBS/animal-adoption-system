@@ -7,7 +7,7 @@ from app.models.enums import AdoptionStatus, ApplicationStatus, UserType
 from app.schemas.general_schema import GeneralResponse
 from app.dependencies.auth_dependency import has_permission
 from datetime import datetime
-from app.schemas.application_schema import CreateApplicationRequest, UpdateApplicationStatusRequest
+from app.schemas.application_schema import CreateApplicationRequest, UpdateApplicationStatusRequest, AdopterUpdateApplication
 from app.utils.common_util import paginate_query
 
 router = APIRouter(prefix="/application-management", tags=["Application Management"])
@@ -279,6 +279,63 @@ def update_application_status(
         animal.adoption_status = AdoptionStatus.Adopted
         animal.updated_at = datetime.utcnow()
         animal.updated_by = user_info["username"]
+
+    db.commit()
+    db.refresh(application)
+
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@router.put(
+    "/applications/{application_id}/adopter", 
+    status_code=status.HTTP_204_NO_CONTENT
+)
+async def update_application_by_adopter(
+    application_id: int,
+    request_data: AdopterUpdateApplication,
+    db: Session = Depends(get_db),
+    user_info = Depends(has_permission(["Adopter"])),
+):
+    current_user_id = int(user_info["sub"])
+
+    # Fetch application
+    application = db.query(Application).filter(
+        Application.id == application_id,
+        Application.is_deleted.is_(False)
+    ).first()
+
+    if not application:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, 
+            detail="Application not found"
+        )
+
+    # User can modify only their own application
+    if application.adopter_id != current_user_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You can only modify your own application."
+        )
+
+    if application.application_status in [ApplicationStatus.Approved, ApplicationStatus.Rejected]:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Cannot cancel an application that is already decided."
+        )
+
+    if request_data.reason is not None:
+        application.reason = request_data.reason
+
+    if request_data.application_status:
+        if request_data.application_status not in [ApplicationStatus.Cancelled]:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Only cancellation is allowed."
+            )
+        application.application_status = request_data.application_status
+
+    application.updated_at = datetime.utcnow()
+    application.updated_by = user_info["username"]
 
     db.commit()
     db.refresh(application)

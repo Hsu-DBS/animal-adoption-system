@@ -8,3 +8,8 @@ class CreateApplicationRequest(BaseModel):
 
 class UpdateApplicationStatusRequest(BaseModel):
     application_status: ApplicationStatus
+
+
+class AdopterUpdateApplication(BaseModel):
+    reason: str | None = None
+    application_status: ApplicationStatus | None = None
