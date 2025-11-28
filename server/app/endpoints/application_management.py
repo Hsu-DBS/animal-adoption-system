@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Query
+from fastapi import APIRouter, Depends, HTTPException, Response, status, Query
 from sqlalchemy.orm import Session
 from app.db.database import get_db
 from app.models.application import Application
@@ -7,7 +7,7 @@ from app.models.enums import ApplicationStatus, UserType
 from app.schemas.general_schema import GeneralResponse
 from app.dependencies.auth_dependency import has_permission
 from datetime import datetime
-from app.schemas.application_schema import CreateApplicationRequest
+from app.schemas.application_schema import CreateApplicationRequest, UpdateApplicationStatusRequest
 from app.utils.common_util import paginate_query
 
 router = APIRouter(prefix="/application-management", tags=["Application Management"])
@@ -219,3 +219,45 @@ def create_application(
         message="Application submitted successfully",
         data=data_to_return
     )
+
+
+#Using PATCH because only one field(application_status) is being updated
+@router.patch(
+    "/applications/{application_id}/status",
+    status_code=status.HTTP_204_NO_CONTENT
+)
+def update_application_status(
+    application_id: int,
+    request_data: UpdateApplicationStatusRequest,
+    db: Session = Depends(get_db),
+    user_info = Depends(has_permission("Admin"))  # only admin can change status
+):
+    # Fetch application
+    application = (
+        db.query(Application)
+        .filter(
+            Application.id == application_id,
+            Application.is_deleted.is_(False)
+        )
+        .first()
+    )
+
+    if not application:
+        raise HTTPException(
+            status_code=404,
+            detail="Application not found"
+        )
+
+    # Prevent changing status after Approved/Rejected
+    if application.application_status in [ApplicationStatus.Approved, ApplicationStatus.Rejected]:
+        raise HTTPException(400, "Cannot modify a completed application")
+
+    # Update application status
+    application.application_status = request_data.application_status
+    application.updated_at = datetime.utcnow()
+    application.updated_by = user_info["username"]
+
+    db.commit()
+    db.refresh(application)
+
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
