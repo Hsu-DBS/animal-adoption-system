@@ -341,3 +341,36 @@ async def update_application_by_adopter(
     db.refresh(application)
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@router.delete(
+    "/applications/{application_id}",
+    status_code=status.HTTP_204_NO_CONTENT
+)
+async def delete_application_by_ID(
+    application_id: int,
+    db: Session = Depends(get_db),
+    user_info = Depends(has_permission(["Admin"])),
+):
+
+    # Fetch application
+    application = db.query(Application).filter(
+        Application.id == application_id,
+        Application.is_deleted.is_(False)
+    ).first()
+
+    if not application:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Application not found"
+        )
+
+    # Soft delete
+    application.is_deleted = True
+    application.updated_at = datetime.utcnow()
+    application.updated_by = user_info["username"]
+
+    db.commit()
+    db.refresh(application)
+
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
