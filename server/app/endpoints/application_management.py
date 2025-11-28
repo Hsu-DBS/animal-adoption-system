@@ -257,18 +257,28 @@ def update_application_status(
 
     if not application:
         raise HTTPException(
-            status_code=404,
+            status_code=status.HTTP_404_NOT_FOUND,
             detail="Application not found"
         )
 
     # Prevent changing status after Approved/Rejected
     if application.application_status in [ApplicationStatus.Approved, ApplicationStatus.Rejected]:
-        raise HTTPException(400, "Cannot modify a completed application")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Cannot modify a completed application"
+        )
 
     # Update application status
     application.application_status = request_data.application_status
     application.updated_at = datetime.utcnow()
     application.updated_by = user_info["username"]
+
+    # If application is approved, update adoption_status of animal to Adopted
+    if request_data.application_status == ApplicationStatus.Approved.value:
+        animal = application.animal
+        animal.adoption_status = AdoptionStatus.Adopted
+        animal.updated_at = datetime.utcnow()
+        animal.updated_by = user_info["username"]
 
     db.commit()
     db.refresh(application)
