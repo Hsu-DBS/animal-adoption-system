@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from app.db.database import get_db
 from app.models.application import Application
 from app.models.animal import Animal
-from app.models.enums import ApplicationStatus, UserType
+from app.models.enums import AdoptionStatus, ApplicationStatus, UserType
 from app.schemas.general_schema import GeneralResponse
 from app.dependencies.auth_dependency import has_permission
 from datetime import datetime
@@ -136,7 +136,7 @@ def get_application_by_id(
 
     if role == UserType.Adopter.value and application.adopter_id != current_user_id:
         raise HTTPException(
-            status_code=403,
+            status_code=status.HTTP_403_FORBIDDEN,
             detail="You are not allowed to view this application"
         )
 
@@ -182,7 +182,17 @@ def create_application(
         ).first()
     )
     if not animal:
-        raise HTTPException(404, "Animal not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Animal not found"
+        )
+    
+    # cannot apply if animal is already adopted
+    if animal.adoption_status == AdoptionStatus.Adopted:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="This animal has already been adopted. Applications are no longer accepted."
+        )
 
     # Prevent duplicate active applications
     existing = (
@@ -194,7 +204,10 @@ def create_application(
         ).first()
     )
     if existing:
-        raise HTTPException(400, "You already submitted an application for this animal")
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="You already submitted an application for this animal"
+        )
 
     new_app = Application(
         animal_id=request_data.animal_id,
