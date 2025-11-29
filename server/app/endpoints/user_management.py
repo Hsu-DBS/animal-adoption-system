@@ -29,11 +29,21 @@ router = APIRouter(prefix="/user-management", tags=["User Management"])
 def get_all_admin_users(
     page: int = Query(1, ge=1, description="Page number must be greater than 0)"),
     limit: int = Query(10, ge=1, le=100, description="Limit must be greater than 0"),
+    name: str | None = Query(None, description="Search by name"),
+    email: str | None = Query(None, description="Search by email"),
+    address: str | None = Query(None, description="Search by address"),
     db: Session = Depends(get_db),
     _ = Depends(has_permission("Admin")),
 ):
 
-    data_to_return = _get_all_users_by_role(page, limit, UserType.Admin.value, db)
+    data_to_return = _get_all_users_by_role(
+        page, 
+        limit,
+        name,
+        email,
+        address,
+        UserType.Admin.value, 
+        db)
 
     return GeneralResponse(
         message="Get all users successfully",
@@ -132,11 +142,22 @@ def delete_user_admin(
 def get_all_adopters(
     page: int = Query(1, ge=1, description="Page number must be greater than 0)"),
     limit: int = Query(10, ge=1, le=100, description="Limit must be greater than 0"),
+    name: str | None = Query(None, description="Search by name"),
+    email: str | None = Query(None, description="Search by email"),
+    address: str | None = Query(None, description="Search by address"),
     db: Session = Depends(get_db),
     _ = Depends(has_permission("Admin")),
 ):
 
-    data_to_return = _get_all_users_by_role(page, limit, UserType.Adopter.value, db)
+    data_to_return = _get_all_users_by_role(
+        page, 
+        limit,
+        name,
+        email,
+        address,
+        UserType.Adopter.value, 
+        db
+    )
 
     return GeneralResponse(
         message="Get all adopters successfully",
@@ -320,10 +341,23 @@ def _create_new_account(
 def _get_all_users_by_role(
     page: int,
     limit: int,
+    name: str | None,
+    email: str | None,
+    address: str | None,
     user_type: str,
     db: Session,
 ):
     query = db.query(User).filter(User.user_type==user_type).order_by(User.id.asc())
+
+    #search by name
+    if name:
+        query = query.filter(User.name.ilike(f"%{name}%"))
+
+    if email:
+        query = query.filter(User.email.ilike(f"%{email}%"))
+
+    if address:
+        query = query.filter(User.address.ilike(f"%{address}%"))
 
     paginated_info = paginate_query(query, page, limit)
 
