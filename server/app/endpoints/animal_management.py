@@ -11,6 +11,7 @@ from app.schemas.animal_schema import CreateAnimalRequest, UpdateAnimalRequest
 from app.schemas.general_schema import GeneralResponse
 from app.utils.common_util import paginate_query
 from app.dependencies.auth_dependency import has_permission
+from app.models.enums import AdoptionStatus
 
 
 router = APIRouter(prefix="/animal-management", tags=["Animal Management"])
@@ -19,14 +20,15 @@ load_dotenv()
 IMAGE_DIR = os.getenv("IMAGE_DIR")
 
 
-@router.get(
-    "/animals",
-    response_model=GeneralResponse,
-    status_code=status.HTTP_200_OK
-)
+@router.get("/animals",response_model=GeneralResponse)
 def get_all_animals(
     page: int = Query(1, ge=1, description="Page number must be greater than 0"),
     limit: int = Query(10, ge=1, le=100, description="Limit must be between 1 and 100"),
+    name: str | None = Query(None, description="Search by name"),
+    species: str | None = Query(None, description="Search by species"),
+    breed: str | None = Query(None, description="Search by breed"),
+    gender: str | None = Query(None, description="Search by gender"),
+    adoption_status: str | None = Query(None, description="Filter by adoption status"),
     db: Session = Depends(get_db),
     _ = Depends(has_permission(["Admin", "Adopter"])),
 ):
@@ -36,6 +38,26 @@ def get_all_animals(
         .filter(Animal.is_deleted.is_(False))
         .order_by(Animal.id.asc())
     )
+
+    #search by animal name
+    if name:
+        query = query.filter(Animal.name.ilike(f"%{name}%"))
+
+    #search by animal species
+    if species:
+        query = query.filter(Animal.species.ilike(f"%{species}%"))
+
+    #search by animal breed
+    if breed:
+        query = query.filter(Animal.breed.ilike(f"%{breed}%"))
+
+    #search by gender
+    if gender:
+        query = query.filter(Animal.gender.ilike(f"%{gender}%"))
+    
+    #filter by adoption
+    if adoption_status:
+        query = query.filter(Animal.adoption_status == adoption_status)
 
     # Apply pagination
     paginated_info = paginate_query(query, page, limit)
@@ -66,7 +88,7 @@ def get_all_animals(
         "limit": paginated_info["limit"],
         "total": paginated_info["total"],
         "total_pages": paginated_info["total_pages"],
-        "data": animals
+        "animals": animals
     }
 
     return GeneralResponse(
@@ -75,11 +97,7 @@ def get_all_animals(
     )
 
 
-@router.get(
-    "/animals/{animal_id}",
-    response_model=GeneralResponse,
-    status_code=status.HTTP_200_OK
-)
+@router.get("/animals/{animal_id}", response_model=GeneralResponse)
 def get_animal_by_id(
     animal_id: int,
     db: Session = Depends(get_db),
@@ -141,7 +159,7 @@ def create_animal(
         request_dict = json.loads(request_data)
     except json.JSONDecodeError:
         raise HTTPException(
-            status_code=400,
+            status_code=status.HTTP_400_BAD_REQUEST,
             detail="Invalid JSON format in request_data"
         )
 
@@ -159,7 +177,7 @@ def create_animal(
 
     if ext not in ["jpg", "jpeg", "png", "webp"]:
         raise HTTPException(
-            status_code=400,
+            status_code=status.HTTP_400_BAD_REQUEST,
             detail="Invalid image format. Only .jpg, .jpeg, .png, .webp are allowed."
         )
 
@@ -190,7 +208,7 @@ def create_animal(
 
     if existing_animal:
         raise HTTPException(
-            status_code=400,
+            status_code=status.HTTP_400_BAD_REQUEST,
             detail="Animal with similar information already exists"
         )
 
@@ -260,7 +278,7 @@ def update_animal_by_ID(
 
     if not animal:
         raise HTTPException(
-            status_code=404,
+            status_code=status.HTTP_400_BAD_REQUEST,
             detail="Animal not found"
         )
 
@@ -271,7 +289,7 @@ def update_animal_by_ID(
         ext = filename.split(".")[-1].lower()
         if ext not in ["jpg", "jpeg", "png", "webp"]:
             raise HTTPException(
-                status_code=400,
+                status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Only .jpg, .jpeg, .png, .webp allowed"
             )
 

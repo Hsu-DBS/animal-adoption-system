@@ -43,7 +43,8 @@ def get_all_admin_users(
         email,
         address,
         UserType.Admin.value, 
-        db)
+        db
+    )
 
     return GeneralResponse(
         message="Get all users successfully",
@@ -347,15 +348,23 @@ def _get_all_users_by_role(
     user_type: str,
     db: Session,
 ):
-    query = db.query(User).filter(User.user_type==user_type).order_by(User.id.asc())
+    query = (
+        db.query(User)
+        .filter(
+            User.user_type==user_type,
+            User.is_deleted.is_(False),
+        ).order_by(User.id.asc())
+    )
 
-    #search by name
+    #search by username
     if name:
         query = query.filter(User.name.ilike(f"%{name}%"))
 
+    #search by email
     if email:
         query = query.filter(User.email.ilike(f"%{email}%"))
 
+    #search by address
     if address:
         query = query.filter(User.address.ilike(f"%{address}%"))
 
@@ -369,7 +378,6 @@ def _get_all_users_by_role(
             "phone": user.phone,
             "address": user.address,
             "user_type": user.user_type.value,
-            "is_deleted": user.is_deleted,
             "created_at": user.created_at,
             "created_by": user.created_by,
             "updated_at": user.updated_at,
@@ -383,7 +391,7 @@ def _get_all_users_by_role(
         "limit": paginated_info["limit"],
         "total": paginated_info["total"],
         "total_pages": paginated_info["total_pages"],
-        "data": users
+        "users": users
     }
 
     return data_to_return
@@ -397,6 +405,7 @@ def _get_user_by_ID(
     user = db.query(User).filter(
         User.id == user_id,
         User.user_type == user_type,
+        User.is_deleted.is_(False),
     ).first()
 
     if not user:
@@ -412,7 +421,6 @@ def _get_user_by_ID(
         "phone": user.phone,
         "address": user.address,
         "user_type": user.user_type.value,
-        "is_deleted": user.is_deleted,
         "created_at": user.created_at,
         "created_by": user.created_by,
         "updated_at": user.updated_at,
