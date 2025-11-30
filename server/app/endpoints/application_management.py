@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Response, status, Query
 from sqlalchemy.orm import Session
 from app.db.database import get_db
 from app.models.application import Application
-from app.models.animal import Animal
+from app.models import Animal, User
 from app.models.enums import AdoptionStatus, ApplicationStatus, UserType
 from app.schemas.general_schema import GeneralResponse
 from app.dependencies.auth_dependency import has_permission
@@ -20,6 +20,9 @@ router = APIRouter(prefix="/application-management", tags=["Application Manageme
 def get_all_applications(
     page: int = Query(1, ge=1, description="Page number must be >= 1"),
     limit: int = Query(10, ge=1, le=100, description="Limit must be between 1 and 100"),
+    animal_name: str | None = Query(None, description="Search by animal name"),
+    adopter_name: str | None = Query(None, description="Search by adopter name"),
+    application_status: str | None = Query(None, description="Filter by application_status"),
     db: Session = Depends(get_db),
     _ = Depends(has_permission("Admin"))
 ):
@@ -27,8 +30,22 @@ def get_all_applications(
     query = (
         db.query(Application)
         .filter(Application.is_deleted.is_(False))
+        .join(Application.animal)
+        .join(Application.adopter)
         .order_by(Application.id.asc())
     )
+
+    if animal_name:
+        query = query.filter(Animal.name.ilike(f"%{animal_name}%"))
+
+    if adopter_name:
+        query = query.filter(User.name.ilike(f"%{adopter_name}%"))
+
+    if application_status:
+        application_status_str_list = [status.strip() for status in application_status.split(",") if status.strip()]
+        application_status_list = [ApplicationStatus(status_) for status_ in application_status_str_list]
+        
+        query = query.filter(Application.application_status.in_(application_status_list))
 
     # Pagination
     paginated = paginate_query(query, page, limit)
