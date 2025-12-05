@@ -19,6 +19,9 @@ import { BrowserRouter } from 'react-router-dom';
 // Import global AuthProvider (manages JWT token, login state, logout)
 import { AuthProvider } from './context/AuthContext.jsx';
 
+// Import global CSS styles
+import "./styles/global.css";
+
 // Render the entire React application into the <div id="root"> element in index.html
 ReactDOM.createRoot(document.getElementById('root')).render(
 
