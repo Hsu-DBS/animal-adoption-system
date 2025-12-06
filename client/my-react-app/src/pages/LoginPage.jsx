@@ -31,13 +31,13 @@ export default function LoginPage() {
 
     try {
       // Send POST request to FastAPI backend for authentication
-      const res = await api.post("/auth/login/admin", {
+      const res = await api.post("/auth/login/adopter", {
         email,
         password,
       });
 
       // Save the returned JWT token using AuthContext
-      login(res.data.access_token);
+      login(res.data.data.access_token);
 
       // Redirect user to homepage after successful login
       window.location.href = "/";
