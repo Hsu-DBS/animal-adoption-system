@@ -68,7 +68,7 @@ def admin_login(
     "/login/adopter",
     response_model=GeneralResponse
 )
-def admin_login(
+def adopter_login(
     login_request_data: AdopterLoginRequest,
     db: Session = Depends(get_db),
 ):
