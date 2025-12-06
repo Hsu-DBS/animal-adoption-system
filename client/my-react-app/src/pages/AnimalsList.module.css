@@ -125,3 +125,42 @@
   cursor: not-allowed;
 }
 
+/* Filter bar container */
+.filterBar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  align-items: center;
+}
+
+.searchInput {
+  width: 240px;   /* or 200px, choose what you like */
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+
+/* Dropdown filters */
+.select {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+/* Clear Filters button */
+.clearButton {
+  padding: 10px 14px;
+  background-color: #666;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.clearButton:hover {
+  background-color: #444;
+}
+
