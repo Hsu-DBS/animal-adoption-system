@@ -48,7 +48,7 @@ export default function LoginPage() {
   };
 
   return (
-    // This  login form logic is referenced and guided by ChatGPT.
+    // This  login form logic is referenced by ChatGPT.
     <div className={styles.container}>
       <h2 className={styles.title}>Login</h2>
 
