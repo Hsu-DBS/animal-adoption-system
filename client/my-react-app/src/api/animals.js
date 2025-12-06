@@ -16,3 +16,12 @@ export async function getAnimals(page = 1, limit = 12, search = "", gender = "",
 
   return res.data;
 }
+
+
+// Fetch a single animal by ID
+export async function getAnimalById(animalId) {
+  // Send GET request
+  const res = await api.get(`/animal-management/animals/${animalId}`);
+  // response data
+  return res.data.data; 
+}
