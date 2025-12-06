@@ -16,6 +16,9 @@ import HomePage from "./pages/HomePage";
 // Import the ProtectedRoute wrapper that checks if the user is authenticated
 import ProtectedRoute from "./components/ProtectedRoute";
 
+// Import the Navbar component
+import Navbar from "./components/Navbar";
+
 // Main App component that defines all application routes
 function App() {
   return (
@@ -36,6 +39,7 @@ function App() {
         element={
           <ProtectedRoute>
             {/* Component rendered only after authentication */}
+            <Navbar />
             <HomePage />
           </ProtectedRoute>
         }
