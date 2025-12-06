@@ -11,7 +11,7 @@ import { Routes, Route } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 
 // Import the Home page component
-import HomePage from "./pages/HomePage";
+import AnimalsList from "./pages/AnimalsList";
 
 // Import the ProtectedRoute wrapper that checks if the user is authenticated
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -40,7 +40,7 @@ function App() {
           <ProtectedRoute>
             {/* Component rendered only after authentication */}
             <Navbar />
-            <HomePage />
+            <AnimalsList />
           </ProtectedRoute>
         }
       />
