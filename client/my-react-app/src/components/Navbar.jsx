@@ -1,26 +1,32 @@
-// Import the CSS module for component styles
-import styles from "./Navbar.module.css";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
+import styles from "./Navbar.module.css"; // import CSS module
 
-// Navbar component
 export default function Navbar() {
+  const { logout } = useContext(AuthContext);
+
+  // Handler for logout button click
+  const handleLogout = () => {
+    logout();              // clear token from AuthContext + localStorage
+    window.location.href = "/login"; // redirect to login page
+  };
+
   return (
-    // Main navigation bar container
     <nav className={styles.navbar}>
-
-      {/* LEFT SECTION: Logo + Project Name */}
+      {/* LEFT SIDE - LOGO + PROJECT NAME */}
       <div className={styles.left}>
-
-        {/* Logo image */}
         <img
           src="/vite.svg"
           alt="Logo"
           className={styles.logo}
         />
-
-        {/* Project title text */}
-        <span className={styles.projectName}>Animal Adoption System</span>
+        <span className={styles.projectName}>Digital Animal Adoption System</span>
       </div>
 
+      {/* RIGHT SIDE - LOGOUT BUTTON */}
+      <button className={styles.logoutButton} onClick={handleLogout}>
+        Logout
+      </button>
     </nav>
   );
 }
