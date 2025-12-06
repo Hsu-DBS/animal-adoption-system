@@ -1,0 +1,59 @@
+/* CSS styles referenced from ChatGPT */
+
+.container {
+  max-width: 900px;
+  margin: 40px auto;
+  display: flex;
+  gap: 24px;
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.image {
+  width: 350px;
+  height: 350px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.info {
+  flex: 1;
+}
+
+.name {
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+
+.detail {
+  margin-bottom: 6px;
+  font-size: 16px;
+}
+
+.description {
+  margin-top: 12px;
+  line-height: 1.6;
+}
+
+.adoptButton {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background: #000;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.adoptButton:hover {
+  background: #333;
+}
+
+.loading,
+.notFound {
+  text-align: center;
+  margin-top: 50px;
+}
+
