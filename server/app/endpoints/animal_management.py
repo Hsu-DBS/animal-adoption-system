@@ -3,6 +3,7 @@ import json
 from dotenv import load_dotenv
 from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File, Form, Query, Response
+from sqlalchemy import or_
 from sqlalchemy.orm import Session
 from pydantic import ValidationError
 from app.db.database import get_db
@@ -24,10 +25,8 @@ IMAGE_DIR = os.getenv("IMAGE_DIR")
 def get_all_animals(
     page: int = Query(1, ge=1, description="Page number must be greater than 0"),
     limit: int = Query(10, ge=1, le=100, description="Limit must be between 1 and 100"),
-    name: str | None = Query(None, description="Search by name"),
-    species: str | None = Query(None, description="Search by species"),
-    breed: str | None = Query(None, description="Search by breed"),
-    gender: str | None = Query(None, description="Search by gender"),
+    search: str | None = Query(None, description="Search by name or species or breed"),
+    gender: str | None = Query(None, description="Filter by gender"),
     adoption_status: str | None = Query(None, description="Filter by adoption status"),
     db: Session = Depends(get_db),
     _ = Depends(has_permission(["Admin", "Adopter"])),
@@ -39,21 +38,19 @@ def get_all_animals(
         .order_by(Animal.id.asc())
     )
 
-    #search by animal name
-    if name:
-        query = query.filter(Animal.name.ilike(f"%{name}%"))
+    #search by animal name, species, breed
+    if search:
+        query = query.filter(
+            or_(
+                Animal.name.ilike(f"%{search}%"),
+                Animal.species.ilike(f"%{search}%"),
+                Animal.breed.ilike(f"%{search}%")
+            )
+        )
 
-    #search by animal species
-    if species:
-        query = query.filter(Animal.species.ilike(f"%{species}%"))
-
-    #search by animal breed
-    if breed:
-        query = query.filter(Animal.breed.ilike(f"%{breed}%"))
-
-    #search by gender
+    #filter by gender
     if gender:
-        query = query.filter(Animal.gender.ilike(f"%{gender}%"))
+        query = query.filter(Animal.gender == gender)
     
     #filter by adoption
     if adoption_status:
