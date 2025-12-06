@@ -1,12 +1,18 @@
 // axios instance with token + baseURL
 import api from "./axios";
 
-// Fetch animals with pagination
-export async function getAnimals(page = 1, limit = 12) {
-  // Send GET request with page + limit as query params to get all animals
+// Fetch animals with pagination + filters
+export async function getAnimals(page = 1, limit = 12, search = "", gender = "", adoptionStatus = "") {
+  // Send GET request + filters as query parameters
   const res = await api.get("/animal-management/animals", {
-    params: { page, limit },
+    params: {
+      page,
+      limit,
+      search: search || undefined, // only send if not empty
+      gender: gender || undefined,
+      adoption_status: adoptionStatus || undefined,
+    },
   });
 
-  return res.data; // return the response data
+  return res.data;
 }
