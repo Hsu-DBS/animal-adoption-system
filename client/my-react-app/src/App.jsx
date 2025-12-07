@@ -22,6 +22,9 @@ import AdoptionForm from "./pages/AdoptionForm";
 // Import Applications List page component
 import ApplicationsList from "./pages/ApplicationsList";
 
+// Import Application Details page component
+import ApplicationDetails from "./pages/ApplicationDetails";
+
 // Import the ProtectedRoute wrapper that checks if the user is authenticated
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -65,6 +68,7 @@ function App() {
         }
       />
 
+      {/* Add route for AdoptionForm page */}
       <Route 
         path="/adopt/:animalId"
         element={
@@ -75,12 +79,24 @@ function App() {
         }
       />
 
+      {/* Add route for ApplicationsList page */}
       <Route
         path="/applications"
         element={
           <ProtectedRoute>
             <Navbar />
             <ApplicationsList />
+          </ProtectedRoute>
+        }
+      />
+
+      {/* Add route for ApplicationDetails page */}
+       <Route
+        path="/applications/:applicationId"
+        element={
+          <ProtectedRoute>
+            <Navbar />
+            <ApplicationDetails />
           </ProtectedRoute>
         }
       />
