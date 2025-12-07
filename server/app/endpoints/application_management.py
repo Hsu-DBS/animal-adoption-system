@@ -162,6 +162,7 @@ def get_application_by_id(
         "id": application.id,
         "animal_id": application.animal_id,
         "animal_name": application.animal.name,
+        "photo_url": application.animal.photo_url,
         "adopter_id": application.adopter_id,
         "adopter_name": application.adopter.name,
         "reason": application.reason,
