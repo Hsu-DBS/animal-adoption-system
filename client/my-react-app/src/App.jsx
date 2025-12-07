@@ -16,6 +16,9 @@ import AnimalsList from "./pages/AnimalsList";
 // Import Animal Details page component
 import AnimalDetails from "./pages/AnimalDetails";
 
+// Import Animal Details page component
+import AdoptionForm from "./pages/AdoptionForm";
+
 // Import the ProtectedRoute wrapper that checks if the user is authenticated
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -55,6 +58,16 @@ function App() {
           <ProtectedRoute>
             <Navbar />
             <AnimalDetails />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route 
+        path="/adopt/:animalId"
+        element={
+          <ProtectedRoute>
+            <Navbar />
+            <AdoptionForm />
           </ProtectedRoute>
         }
       />
