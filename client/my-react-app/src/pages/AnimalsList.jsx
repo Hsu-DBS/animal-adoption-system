@@ -5,13 +5,18 @@
 // Environment Variables in Vite: https://vite.dev/guide/env-and-mode.html
 // MDN setTimeout: https://developer.mozilla.org/en-US/docs/Web/API/Window/setTimeout
 // Using a Timeout Inside useEffect: https://react.dev/reference/react/useEffect#fetching-data-with-effects
+// React Router useNavigate: https://api.reactrouter.com/v7/functions/react_router.useNavigate.html
 
 
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { getAnimals } from "../api/animals";
 import styles from "./AnimalsList.module.css";
 
 export default function AnimalsList() {
+  // Nvaigation hook
+  const navigate = useNavigate();
+
   // Store list of animals
   const [animals, setAnimals] = useState([]);
 
@@ -140,7 +145,7 @@ export default function AnimalsList() {
             <p>No animals found.</p>
           ) : (
             animals.map((animal) => (
-              <div key={animal.id} className={styles.card}>
+              <div key={animal.id} className={styles.card} onClick={() => navigate(`/animals/${animal.id}`)}>
                 {/* Animal Photo */}
                 <img
                   src={`${BASE_URL}${animal.photo_url}`}

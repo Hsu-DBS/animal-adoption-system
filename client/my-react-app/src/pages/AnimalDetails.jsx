@@ -28,6 +28,9 @@ export default function AnimalDetails() {
 
   const [loading, setLoading] = useState(true);
 
+  // Load API base URL from .env
+  const BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
   // Fetch animal details when the page loads
   // useEffect runs only when animalId changes
   useEffect(() => {
@@ -59,7 +62,7 @@ export default function AnimalDetails() {
     <div className={styles.container}>
       {/* animal img */}
       <img
-        src={animal.photo_url || "/placeholder.jpg"} // Show placeholder if missing
+        src={`${BASE_URL}${animal.photo_url}`}
         alt={animal.name}
         className={styles.image}
       />

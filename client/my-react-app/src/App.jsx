@@ -10,8 +10,11 @@ import { Routes, Route } from "react-router-dom";
 // Import the Login page component
 import LoginPage from "./pages/LoginPage";
 
-// Import the Home page component
+// Import the AnimalsList page component
 import AnimalsList from "./pages/AnimalsList";
+
+// Import Animal Details page component
+import AnimalDetails from "./pages/AnimalDetails";
 
 // Import the ProtectedRoute wrapper that checks if the user is authenticated
 import ProtectedRoute from "./components/ProtectedRoute";
