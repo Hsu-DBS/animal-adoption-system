@@ -72,6 +72,16 @@ function App() {
         }
       />
 
+      <Route
+        path="/applications"
+        element={
+          <ProtectedRoute>
+            <Navbar />
+            <ApplicationsList />
+          </ProtectedRoute>
+        }
+      />
+
     </Routes>
   );
 }
