@@ -1,0 +1,154 @@
+/* CSS styles referenced from ChatGPT */
+
+.page {
+  max-width: 950px;
+  margin: 30px auto;
+  padding: 20px;
+}
+
+.backBtn {
+  border: none;
+  background: transparent;
+  font-size: 15px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.title {
+  text-align: center;
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 25px;
+}
+
+/* MAIN CARD */
+.card {
+  display: flex;
+  background: #fff;
+  border-radius: 12px;
+  padding: 25px;
+  gap: 25px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+
+/* LEFT SIDE IMAGE */
+.imageSection {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.image {
+  width: 250px;
+  height: 250px;
+  border-radius: 12px;
+  object-fit: cover;
+  border: 1px solid #ddd;
+}
+
+/* RIGHT SIDE DETAILS */
+.detailsSection {
+  flex: 2;
+}
+
+/* STATUS BADGE */
+.statusBadge {
+  font-size: 13px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-weight: 600;
+  display: inline-block;
+  margin-bottom: 15px;
+}
+
+/* Status Colors */
+.Submitted {
+  background: #e6f0ff;
+  color: #0047b3;
+}
+
+.Approved {
+  background: #e8ffe6;
+  color: #0e7a0b;
+}
+
+.Rejected {
+  background: #ffe6e6;
+  color: #b30000;
+}
+
+.Cancelled {
+  background: #f7e6ff;
+  color: #7400b8;
+}
+
+/* SECTION BLOCKS */
+.block {
+  margin-bottom: 25px;
+}
+
+.block h3 {
+  margin-bottom: 8px;
+  font-size: 18px;
+}
+
+/* REASON TEXT */
+.reasonText {
+  background: #f7f7f7;
+  padding: 12px;
+  border-radius: 8px;
+}
+
+/* Edit Buttons */
+.editBtn {
+  margin-top: 10px;
+  background: black;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.textarea {
+  width: 100%;
+  min-height: 100px;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.editActions {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+}
+
+.saveBtn {
+  background: #007bff;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+}
+
+.cancelEditBtn {
+  background: #999;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+}
+
+/* Cancel Application Button */
+.cancelAppBtn {
+  background: #d00000;
+  color: white;
+  padding: 10px 18px;
+  border-radius: 6px;
+  border: none;
+  margin-top: 10px;
+  cursor: pointer;
+}
+
