@@ -1,19 +1,23 @@
 /* CSS styles referenced from ChatGPT */
 
 
+/* Main container */
 .container {
-  max-width: 850px;
+  max-width: 900px;
   margin: 40px auto;
   padding: 20px;
   background: #fff;
-  border-radius: 8px;
+  border-radius: 10px;
 }
 
+/* Page title */
 .title {
-  font-size: 26px;
-  margin-bottom: 20px;
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 25px;
 }
 
+/* Loading */
 .loading,
 .noData {
   text-align: center;
@@ -21,55 +25,79 @@
   font-size: 18px;
 }
 
+/* Application list */
 .list {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
 }
 
+/* Application card */
 .card {
-  padding: 16px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
+  padding: 20px;
+  border: 1px solid #e5e5e5;
+  border-radius: 14px;
+  background: #fafafa;
+  position: relative;
 }
 
 .cardHeader {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 8px;
+  align-items: center;
+  margin-bottom: 12px;
 }
 
+/* Status badge */
 .status {
-  padding: 4px 10px;
-  border-radius: 6px;
-  font-size: 14px;
+  display: inline-block;
+  font-size: 13px; 
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: 500;
   text-transform: capitalize;
+  min-width: 90px;
+  text-align: center;
+  border: 1px solid rgba(0,0,0,0.05);
 }
 
 /* Status colors */
 .Submitted {
-  background: #e6f0ff;
-  color: #0047b3;
+  background: #eaf2ff;
+  color: #1a54c7;
 }
 
 .Approved {
-  background: #e8ffe6;
-  color: #0e7a0b;
+  background: #eaffea;
+  color: #1b7a16;
 }
 
 .Rejected {
-  background: #ffe6e6;
-  color: #b30000;
+  background: #ffecec;
+  color: #bb1a1a;
 }
 
+.Cancelled {
+  background: #f4eaff;
+  color: #6f1bb7;
+}
+
+/* Details */
+.card p {
+  margin: 6px 0;
+  font-size: 15px;
+}
+
+/* View Details button */
 .detailsButton {
-  margin-top: 10px;
-  padding: 8px 14px;
+  margin-top: 12px;
+  padding: 8px 16px;
   background: black;
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
+  font-size: 14px;
 }
 
 .detailsButton:hover {
