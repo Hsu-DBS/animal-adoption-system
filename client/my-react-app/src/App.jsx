@@ -45,6 +45,17 @@ function App() {
         }
       />
 
+      {/* Add route for AnimalDetails page */}
+      <Route
+        path="/animals/:animalId"
+        element={
+          <ProtectedRoute>
+            <Navbar />
+            <AnimalDetails />
+          </ProtectedRoute>
+        }
+      />
+
     </Routes>
   );
 }
