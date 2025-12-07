@@ -16,8 +16,11 @@ import AnimalsList from "./pages/AnimalsList";
 // Import Animal Details page component
 import AnimalDetails from "./pages/AnimalDetails";
 
-// Import Animal Details page component
+// Import Adoption Form page component
 import AdoptionForm from "./pages/AdoptionForm";
+
+// Import Applications List page component
+import ApplicationsList from "./pages/ApplicationsList";
 
 // Import the ProtectedRoute wrapper that checks if the user is authenticated
 import ProtectedRoute from "./components/ProtectedRoute";

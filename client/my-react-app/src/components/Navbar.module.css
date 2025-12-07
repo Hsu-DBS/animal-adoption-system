@@ -16,6 +16,8 @@
 .left {
   display: flex;
   align-items: center;
+  text-decoration: none;
+  color: black;
 }
 
 /* Logo image styles */
@@ -45,4 +47,16 @@
 
 .logoutButton:hover {
   background-color: #333;
+}
+
+/* Applications nav link */
+.navLink {
+  margin-right: 20px;
+  color: black;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.navLink:hover {
+  text-decoration: underline;
 }
