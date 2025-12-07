@@ -3,6 +3,7 @@
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/async_function
 // https://react.dev/learn/synchronizing-with-effects
 // https://react.dev/learn/conditional-rendering
+// React Router useNavigate: https://api.reactrouter.com/v7/functions/react_router.useNavigate.html
 
 
 // React imports for state management and lifecycle effects
@@ -13,6 +14,9 @@ import { useEffect, useState } from "react";
 // useParams allows reading route parameters like :animalId from URL
 import { useParams } from "react-router-dom";
 
+// useNavigate allows navigation programmatically
+import { useNavigate } from "react-router-dom";
+
 // API function to fetch one animal by ID
 import { getAnimalById } from "../api/animals";
 
@@ -20,6 +24,9 @@ import { getAnimalById } from "../api/animals";
 import styles from "./AnimalDetails.module.css";
 
 export default function AnimalDetails() {
+  // Nvaigation hook
+  const navigate = useNavigate();
+
   // Extract dynamic route parameter from URL
   const { animalId } = useParams();
 
@@ -60,6 +67,10 @@ export default function AnimalDetails() {
 
   return (
     <div className={styles.container}>
+        <button className={styles.backButton} onClick={() => navigate(-1)}>
+            ← Back
+        </button>
+
       {/* animal img */}
       <img
         src={`${BASE_URL}${animal.photo_url}`}
