@@ -167,7 +167,7 @@ export default function AnimalsList() {
                 {/* Adoption Status */}
                 <span
                   className={
-                    animal.adoption_status === "AVAILABLE"
+                    animal.adoption_status === "Available"
                       ? styles.statusAvailable
                       : styles.statusAdopted
                   }
