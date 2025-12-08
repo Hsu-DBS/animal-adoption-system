@@ -10,3 +10,9 @@ export async function getCurrentUser() {
 export async function updateAdopterProfile(adopterId, payload) {
   return await api.put(`/user-management/adopters/${adopterId}`, payload);
 }
+
+// Register a new adopter account
+export async function registerAdopter(payload) {
+  const res = await api.post("/user-management/adopters", payload);
+  return res.data;
+}
