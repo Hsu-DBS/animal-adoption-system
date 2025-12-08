@@ -6,6 +6,7 @@
 
 // React imports for handling state and context
 import { useState, useContext } from "react";
+import { Link } from "react-router-dom";
 
 // Axios instance (configured with base URL + token)
 import api from "../api/axios";
@@ -84,6 +85,15 @@ export default function LoginPage() {
 
         {/* Submit Button */}
         <button className={styles.button}>Login</button>
+
+        {/* Registration Link */}
+        <p className={styles.registerText}>
+          Don't have an account?{" "}
+          <Link to="/register" className={styles.registerLink}>
+            Create one
+          </Link>
+        </p>
+
       </form>
     </div>
   );
