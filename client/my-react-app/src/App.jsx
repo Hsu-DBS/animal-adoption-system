@@ -4,8 +4,18 @@
 
 // Import routing components from React Router.
 // - Routes: Container that holds all route definitions
-// - Route: Represents a single route (URL → Component)
+// - Route: Represents a single route
 import { Routes, Route } from "react-router-dom";
+
+// ---------------------
+// Adopter Routes
+// ---------------------
+
+// Import the ProtectedRoute wrapper that checks if the user is authenticated
+import ProtectedRoute from "./components/ProtectedRoute";
+
+// Import the Navbar component
+import Navbar from "./components/Navbar";
 
 // Import the Login page component
 import LoginPage from "./pages/LoginPage";
@@ -31,11 +41,12 @@ import ApplicationDetails from "./pages/ApplicationDetails";
 // Import Adopter Profile page component
 import AdopterProfile from "./pages/AdopterProfile";
 
-// Import the ProtectedRoute wrapper that checks if the user is authenticated
-import ProtectedRoute from "./components/ProtectedRoute";
 
-// Import the Navbar component
-import Navbar from "./components/Navbar";
+// ---------------------
+// Admin Routes
+// ---------------------
+
+import AdminLogin from "./pages/AdminLogin";
 
 // Main App component that defines all application routes
 function App() {
@@ -43,17 +54,23 @@ function App() {
     // Routes container that holds all <Route> elements
     <Routes>
       
+      {/* Adopter Public Routes */}
+
       {/* Public Route: /login */}
       <Route path="/login" element={<LoginPage />} />
 
       {/* Public Route: Register */}
       <Route path="/register" element={<AdopterRegister />} />
 
+      {/* Admin Public Routes */}
+      {/* Public Route: /admin/login */}
+      <Route path="/admin/login" element={<AdminLogin />} />
+
       {/*
         Protected Route: /
         - Wrapped inside <ProtectedRoute>
         - Only accessible if user has a valid JWT token
-        - If not logged in → automatically redirects to /login
+        - If not logged in, automatically redirects to /login
       */}
       <Route
         path="/"
