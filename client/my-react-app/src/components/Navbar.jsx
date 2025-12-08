@@ -23,7 +23,7 @@ export default function Navbar() {
       {/* Wrap entire left section inside a Link */}
       <Link to="/" className={styles.left}>
         <img
-          src="/vite.svg"
+          src="/logo.png"
           alt="Logo"
           className={styles.logo}
         />
