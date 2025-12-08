@@ -46,7 +46,17 @@ import AdopterProfile from "./pages/AdopterProfile";
 // Admin Routes
 // ---------------------
 
+// Import Admin Login page component
 import AdminLogin from "./pages/AdminLogin";
+
+// Import AdminNavbar component
+import AdminNavbar from "./components/AdminNavbar";
+
+// Import Admin Dashboard page component
+import AdminDashboard from "./pages/AdminDashboard";
+
+// Import the AdminProtectedRoute wrapper that checks if the admin is authenticated
+import AdminProtectedRoute from "./components/AdminProtectedRoute";
 
 // Main App component that defines all application routes
 function App() {
@@ -67,7 +77,7 @@ function App() {
       <Route path="/admin/login" element={<AdminLogin />} />
 
       {/*
-        Protected Route: /
+        Adopter Protected Route: /
         - Wrapped inside <ProtectedRoute>
         - Only accessible if user has a valid JWT token
         - If not logged in, automatically redirects to /login
@@ -135,6 +145,21 @@ function App() {
             <Navbar />
             <AdopterProfile />
           </ProtectedRoute>
+        }
+      />
+
+      {/* -------------------- */}
+      {/*      Admin Routes    */}
+      {/* -------------------- */}
+
+      {/* Admin dashboard */}
+      <Route
+        path="/admin/dashboard"
+        element={
+          <AdminProtectedRoute>
+            <AdminNavbar />
+            <AdminDashboard />
+          </AdminProtectedRoute>
         }
       />
 

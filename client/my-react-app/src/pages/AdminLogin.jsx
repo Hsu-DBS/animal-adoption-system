@@ -52,7 +52,7 @@ export default function AdminLoginPage() {
       localStorage.setItem("adminToken", access_token);
 
       // Redirect to admin dashboard
-      navigate("/admin");
+      navigate("/admin/dashboard");
 
     } catch (err) {
       // Show backend error message or fallback message
