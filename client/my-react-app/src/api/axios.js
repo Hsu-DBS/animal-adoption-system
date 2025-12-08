@@ -47,19 +47,23 @@ const api = axios.create({
  * - Token is decoded to extract user role (Admin or Adopter)
  * - Role is stored in the request config for possible use
  */
+
+// REQUEST INTERCEPTOR
 api.interceptors.request.use(
   (config) => {
     // Read token stored in browser's localStorage
-    const token = localStorage.getItem("access_token");
+    const adminToken = localStorage.getItem("adminToken");
+    const adopterToken = localStorage.getItem("access_token");
 
-    // If token exists, attach it to Authorization header
+    const token = adminToken || adopterToken;
+
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
 
       try {
         // Decode token to extract user info including role
         const decoded = jwtDecode(token);
-
+        
         // Store role inside axios config
         config.userRole = decoded.role;
         config.userId = decoded.sub;
@@ -108,7 +112,10 @@ api.interceptors.response.use(
   (error) => {
     // If backend says "401 Unauthorized"
     if (error.response?.status === 401) {
-      const token = localStorage.getItem("access_token");
+      const adminToken = localStorage.getItem("adminToken");
+      const adopterToken = localStorage.getItem("access_token");
+
+      let token = adminToken || adopterToken;
       let role = null;
 
       // Try decoding token to determine user type
@@ -117,11 +124,12 @@ api.interceptors.response.use(
           const decoded = jwtDecode(token);
           role = decoded.role; // "Admin" or "Adopter"
         } catch (err) {
-          console.warn("Failed to decode token in 401 handler:", err);
+          console.warn("Failed to decode token:", err);
         }
       }
 
-      // Remove invalid JWT token
+      // Clear BOTH tokens
+      localStorage.removeItem("adminToken");
       localStorage.removeItem("access_token");
 
       // Redirect based on role
