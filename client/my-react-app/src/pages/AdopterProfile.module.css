@@ -1,0 +1,41 @@
+/* CSS styles referenced from ChatGPT */
+
+.container {
+  max-width: 500px;
+  margin: 30px auto;
+  padding: 20px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+input {
+  padding: 10px;
+  border: 1px solid #d4d4d4;
+  border-radius: 6px;
+}
+
+.saveBtn {
+  margin-top: 20px;
+  padding: 12px;
+  background: #0A66FF;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.saveBtn:disabled {
+  background: #AAB8C2;
+  cursor: not-allowed;
+}
+
+.error {
+  color: red;
+  font-size: 0.9rem;
+}
+
