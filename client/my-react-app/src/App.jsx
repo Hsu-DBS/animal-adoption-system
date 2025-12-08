@@ -10,6 +10,9 @@ import { Routes, Route } from "react-router-dom";
 // Import the Login page component
 import LoginPage from "./pages/LoginPage";
 
+// Import Adopter Registration page component
+import AdopterRegister from "./pages/AdopterRegister";
+
 // Import the AnimalsList page component
 import AnimalsList from "./pages/AnimalsList";
 
@@ -42,6 +45,9 @@ function App() {
       
       {/* Public Route: /login */}
       <Route path="/login" element={<LoginPage />} />
+
+      {/* Public Route: Register */}
+      <Route path="/register" element={<AdopterRegister />} />
 
       {/*
         Protected Route: /
