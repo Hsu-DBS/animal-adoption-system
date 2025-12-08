@@ -37,6 +37,11 @@ export default function Navbar() {
         My Applications
       </Link>
 
+      {/* My Profile */}
+      <Link className={styles.navLink} to="/profile">
+        My Profile
+      </Link>
+
       {/* RIGHT SIDE - LOGOUT BUTTON */}
       <button className={styles.logoutButton} onClick={handleLogout}>
         Logout
