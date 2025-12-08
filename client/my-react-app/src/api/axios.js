@@ -1,5 +1,5 @@
 import axios from "axios";
-
+import { jwtDecode } from "jwt-decode";
 
 // Load backend base URL from .env file
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -42,6 +42,10 @@ const api = axios.create({
  * Reference:
  * Axios Interceptors Documentation:
  * https://axios-http.com/docs/interceptors
+ *
+ * Updated:
+ * - Token is decoded to extract user role (Admin or Adopter)
+ * - Role is stored in the request config for possible use
  */
 api.interceptors.request.use(
   (config) => {
@@ -51,6 +55,17 @@ api.interceptors.request.use(
     // If token exists, attach it to Authorization header
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+
+      try {
+        // Decode token to extract user info including role
+        const decoded = jwtDecode(token);
+
+        // Store role inside axios config
+        config.userRole = decoded.role;
+        config.userId = decoded.sub;
+      } catch (err) {
+        console.warn("Failed to decode JWT token:", err);
+      }
     }
 
     return config; // continue request
@@ -81,6 +96,9 @@ api.interceptors.request.use(
  * This ensures the app automatically logs out users with
  * expired or invalid JWT tokens.
  *
+ * - JWT is decoded to determine if user is Admin or Adopter
+ * - Redirects to correct login page based on role
+ *
  * Reference:
  * https://axios-http.com/docs/interceptors
  */
@@ -90,12 +108,28 @@ api.interceptors.response.use(
   (error) => {
     // If backend says "401 Unauthorized"
     if (error.response?.status === 401) {
+      const token = localStorage.getItem("access_token");
+      let role = null;
+
+      // Try decoding token to determine user type
+      if (token) {
+        try {
+          const decoded = jwtDecode(token);
+          role = decoded.role; // "Admin" or "Adopter"
+        } catch (err) {
+          console.warn("Failed to decode token in 401 handler:", err);
+        }
+      }
 
       // Remove invalid JWT token
       localStorage.removeItem("access_token");
 
-      // Redirect user to login page
-      window.location.href = "/login";
+      // Redirect based on role
+      if (role === "Admin") {
+        window.location.href = "/admin/login";
+      } else {
+        window.location.href = "/login";
+      }
     }
 
     return Promise.reject(error); // forward error to caller
