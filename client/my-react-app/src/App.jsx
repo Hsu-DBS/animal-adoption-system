@@ -66,6 +66,9 @@ import AdminAnimalCreate from "./pages/AdminAnimalCreate";
 // Import Animal Update page component
 import AdminAnimalUpdate from "./pages/AdminAnimalUpdate";
 
+// Import Admin Applications Management page component
+import AdminApplications from "./pages/AdminApplications";
+
 // Main App component that defines all application routes
 function App() {
   return (
@@ -197,6 +200,16 @@ function App() {
           <AdminProtectedRoute>
             <AdminNavbar />
             <AdminAnimalUpdate />
+          </AdminProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/admin/applications"
+        element={
+          <AdminProtectedRoute>
+            <AdminNavbar />
+            <AdminApplications />
           </AdminProtectedRoute>
         }
       />
