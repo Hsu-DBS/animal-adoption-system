@@ -32,7 +32,7 @@ def get_all_applications(
         .filter(Application.is_deleted.is_(False))
         .join(Application.animal)
         .join(Application.adopter)
-        .order_by(Application.id.asc())
+        .order_by(Application.id.desc())
     )
 
     if animal_name:
@@ -97,7 +97,7 @@ def get_applications_of_current_adopter(
             Application.adopter_id == adopter_id,
             Application.is_deleted.is_(False)
         )
-        .order_by(Application.id.asc())
+        .order_by(Application.id.desc())
         .all()
     )
 

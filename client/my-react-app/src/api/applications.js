@@ -1,6 +1,11 @@
 // axios instance with token + baseURL
 import api from "./axios";
 
+
+// ------------------------------------
+// Application API calls for adopters
+// ------------------------------------
+
 // Submit an adoption application
 export async function submitApplication(payload) {
   // Send POST request
@@ -8,14 +13,12 @@ export async function submitApplication(payload) {
   return res.data;
 }
 
-
 // GET applications for the current logged-in adopter
 export async function getMyApplications() {
   // Send GET request
   const res = await api.get("/application-management/applications/current-adopter");
   return res.data.data.applications;
 }
-
 
 // GET application by ID
 export async function getApplicationById(id) {
@@ -28,4 +31,15 @@ export async function getApplicationById(id) {
 export async function updateApplicationByAdopter(id, payload) {
   // Send PUT request
   return await api.put(`/application-management/applications/${id}/adopter`, payload);
+}
+
+
+// ------------------------------------------
+// Application API calls for administrators
+// ------------------------------------------
+
+// Get all applications (with filters + pagination)
+export async function getApplications(params) {
+  const res = await api.get("/application-management/applications", { params });
+  return res.data;
 }
