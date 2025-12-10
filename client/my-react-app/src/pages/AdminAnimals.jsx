@@ -251,7 +251,7 @@ export default function AdminAnimals() {
               <td className={styles.actions}>
                 <button
                   className={styles.updateBtn}
-                  onClick={() => navigate("")}
+                  onClick={() => navigate(`/admin/animals/update/${a.id}`)}
                 >
                   Update
                 </button>
