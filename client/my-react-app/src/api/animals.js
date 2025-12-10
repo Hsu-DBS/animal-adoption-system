@@ -25,3 +25,12 @@ export async function getAnimalById(animalId) {
   // response data
   return res.data.data; 
 }
+
+
+// Create a new animal
+export async function createAnimal(payload) {
+  const res = await api.post("/animal-management/animals", payload, {
+    headers: { "Content-Type": "multipart/form-data" }
+  });
+  return res.data.data;
+}
