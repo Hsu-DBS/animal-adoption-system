@@ -1,0 +1,190 @@
+// References:
+// FormData: https://developer.mozilla.org/en-US/docs/Web/API/FormData/FormData
+// Creating Object URLs: https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL_static
+// JavaScript JSON.stringify(): https://www.w3schools.com/js/js_json_stringify.asp
+// Error Handling: https://www.geeksforgeeks.org/javascript/javascript-error-and-exceptional-handling-with-examples/
+
+import { useState } from "react";
+import { createAnimal } from "../api/animals";
+import styles from "./AdminAnimalCreate.module.css";
+import { useNavigate } from "react-router-dom";
+
+export default function AdminAnimalCreate() {
+  const navigate = useNavigate();
+
+  // Form state for each input field
+  const [form, setForm] = useState({
+    name: "",
+    species: "",
+    breed: "",
+    age: "",
+    gender: "",
+    description: "",
+    adoption_status: "Available", // default selected
+  });
+
+  // Image file and preview URL
+  const [imageFile, setImageFile] = useState(null);
+  const [preview, setPreview] = useState(null);
+
+  // Error message
+  const [error, setError] = useState("");
+
+  // Handle text input changes
+  const handleChange = (e) => {
+    setForm({
+      ...form,
+      [e.target.name]: e.target.value, // dynamic key update
+    });
+  };
+
+  // Handle image upload
+  const handleImage = (e) => {
+    const file = e.target.files[0];
+    setImageFile(file);
+
+    // Create a temporary preview URL for the image
+    setPreview(URL.createObjectURL(file));
+  };
+
+  // Submit form
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // prevent default form refresh
+    setError("");
+
+    // Validate image
+    if (!imageFile) {
+      setError("Animal image is required.");
+      return;
+    }
+
+    try {
+      // Create FormData for multipart/form-data upload
+      const fd = new FormData();
+
+      // a JSON string field
+      const jsonData = {
+        name: form.name,
+        species: form.species,
+        breed: form.breed,
+        age: Number(form.age),
+        gender: form.gender,
+        description: form.description,
+        adoption_status: form.adoption_status,
+      };
+
+      // Append fields
+      fd.append("request_data", JSON.stringify(jsonData));
+      fd.append("animal_image", imageFile);
+
+      // Call API
+      await createAnimal(fd);
+
+      alert("Animal created successfully!");
+      navigate("/admin/animals"); // redirect back to list
+    } catch (err) {
+      console.error(err);
+
+      // Show error
+      setError(err.response?.data?.detail || "Failed to create animal.");
+    }
+  };
+
+  return (
+    <div className={styles.container}>
+      <div className={styles.innerBox}>
+        
+        {/* Page Title */}
+        <h2 className={styles.title}>Add New Animal</h2>
+
+        {/* FORM */}
+        <form className={styles.form} onSubmit={handleSubmit}>
+
+          {/* Name */}
+          <label>Name</label>
+          <input 
+            name="name" 
+            value={form.name} 
+            onChange={handleChange} 
+            required 
+          />
+
+          {/* Species */}
+          <label>Species</label>
+          <input 
+            name="species" 
+            value={form.species} 
+            onChange={handleChange} 
+            required 
+          />
+
+          {/* Breed */}
+          <label>Breed</label>
+          <input 
+            name="breed" 
+            value={form.breed} 
+            onChange={handleChange} 
+            required 
+          />
+
+          {/* Age */}
+          <label>Age</label>
+          <input 
+            type="number" 
+            name="age" 
+            value={form.age} 
+            onChange={handleChange} 
+            required
+          />
+
+          {/* Gender */}
+          <label>Gender</label>
+          <select 
+            name="gender" 
+            value={form.gender} 
+            onChange={handleChange} 
+            required
+          >
+            <option value="">Select gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+          </select>
+
+          {/* Description */}
+          <label>Description</label>
+          <textarea
+            name="description"
+            value={form.description}
+            onChange={handleChange}
+            rows="4"
+          />
+
+          {/* Image Upload */}
+          <label>Animal Image</label>
+          <input 
+            type="file" 
+            accept="image/*"
+            onChange={handleImage}
+            required
+          />
+
+          {/* Preview uploaded image */}
+          {preview && (
+            <img 
+              src={preview} 
+              alt="preview" 
+              className={styles.preview} 
+            />
+          )}
+
+          {/* Error message */}
+          {error && <p className={styles.error}>{error}</p>}
+
+          {/* Submit button */}
+          <button className={styles.saveBtn}>Save Animal</button>
+
+        </form>
+      </div>
+    </div>
+  );
+}
