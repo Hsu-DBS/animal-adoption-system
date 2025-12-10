@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Response, status, Query
 from sqlalchemy.orm import Session
+from sqlalchemy import or_
 from app.db.database import get_db
 from app.models.application import Application
 from app.models import Animal, User
@@ -20,8 +21,7 @@ router = APIRouter(prefix="/application-management", tags=["Application Manageme
 def get_all_applications(
     page: int = Query(1, ge=1, description="Page number must be >= 1"),
     limit: int = Query(10, ge=1, le=100, description="Limit must be between 1 and 100"),
-    animal_name: str | None = Query(None, description="Search by animal name"),
-    adopter_name: str | None = Query(None, description="Search by adopter name"),
+    search_by_name: str | None = Query(None, description="Search by animal or adopter name"),
     application_status: str | None = Query(None, description="Filter by application_status"),
     db: Session = Depends(get_db),
     _ = Depends(has_permission("Admin"))
@@ -35,11 +35,13 @@ def get_all_applications(
         .order_by(Application.id.desc())
     )
 
-    if animal_name:
-        query = query.filter(Animal.name.ilike(f"%{animal_name}%"))
-
-    if adopter_name:
-        query = query.filter(User.name.ilike(f"%{adopter_name}%"))
+    if search_by_name:
+        query = query.filter(
+            or_(
+                Animal.name.ilike(f"%{search_by_name}%"),
+                User.name.ilike(f"%{search_by_name}%"),
+            )
+        )
 
     if application_status:
         application_status_str_list = [status.strip() for status in application_status.split(",") if status.strip()]
