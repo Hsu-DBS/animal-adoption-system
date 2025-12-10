@@ -41,3 +41,8 @@ export async function updateAnimal(animalId, payload) {
     headers: { "Content-Type": "multipart/form-data" },
   });
 }
+
+// Delete animal by ID
+export async function deleteAnimal(animalId) {
+  return await api.delete(`/animal-management/animals/${animalId}`);
+}
