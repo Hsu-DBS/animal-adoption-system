@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import { getAnimals } from "../api/animals";
 import styles from "./AdminAnimals.module.css";
 import { useNavigate } from "react-router-dom";
+import { deleteAnimal } from "../api/animals";
 
 export default function AdminAnimals() {
   const navigate = useNavigate();
@@ -44,26 +45,28 @@ export default function AdminAnimals() {
     return () => clearTimeout(timer);
   }, [search]);
 
-  // Fetch animals whenever filters / page change
-  useEffect(() => {
-    async function loadAnimals() {
-      try {
-        const res = await getAnimals(page, limit, debouncedSearch, gender, status);
+  // Load animals from API
+  const loadAnimals = async () => {
+    try {
+      const res = await getAnimals(page, limit, debouncedSearch, gender, status);
 
-        const payload = res.data ?? res;
-        const data = payload.data ?? payload;
+      const payload = res.data ?? res;
+      const data = payload.data ?? payload;
 
-        setAnimals(data.animals || []);
-        setTotalPages(data.total_pages || 1);
-      } catch (err) {
-        console.error("Failed to load animals", err);
-        setAnimals([]);
-        setTotalPages(1);
-      }
+      setAnimals(data.animals || []);
+      setTotalPages(data.total_pages || 1);
+    } catch (err) {
+      console.error("Failed to load animals", err);
+      setAnimals([]);
+      setTotalPages(1);
     }
+  };
 
+  // Reload animals when something changes
+  useEffect(() => {
     loadAnimals();
   }, [page, debouncedSearch, gender, status]);
+
 
   // Clear all filters
   const clearFilters = () => {
@@ -140,6 +143,20 @@ export default function AdminAnimals() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  // Handle delete animal
+  const handleDelete = async (animalId) => {
+    const yes = confirm("Are you sure?");
+    if (!yes) return;
+
+    try {
+      await deleteAnimal(animalId);
+      alert("Animal deleted successfully!");
+      loadAnimals();
+    } catch (err) {
+      alert("Failed to delete", err);
+    }
   };
 
 
@@ -256,7 +273,7 @@ export default function AdminAnimals() {
                   Update
                 </button>
 
-                <button className={styles.deleteBtn}>
+                <button className={styles.deleteBtn} onClick={() => handleDelete(a.id)}>
                   Delete
                 </button>
               </td>
