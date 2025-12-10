@@ -196,7 +196,7 @@ export default function AdminAnimals() {
         <button
           type="button"
           className={styles.addBtn}
-          onClick={() => navigate("")}
+          onClick={() => navigate("/admin/animals/create")}
         >
           + Add New Animal
         </button>
