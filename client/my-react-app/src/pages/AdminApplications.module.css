@@ -1,0 +1,102 @@
+/* CSS styles referenced from ChatGPT */
+
+.container {
+  padding: 20px;
+}
+
+.filters {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.filters input,
+.filters select {
+  padding: 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+}
+
+.clearBtn {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: none;
+  background: #6b7280; /* gray */
+  color: white;
+  cursor: pointer;
+}
+
+/* Table */
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: 12px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+/* Status colors */
+.statusBadge {
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 12px;
+  color: white;
+}
+
+.submitted {
+  background: #3b82f6;
+}
+
+.approved {
+  background: #10b981;
+}
+
+.rejected {
+  background: #ef4444;
+}
+
+.cancelled {
+  background: #6b7280;
+}
+
+.unknown {
+  background: #6b7280;
+}
+
+
+/* Actions */
+.updateBtn {
+  background: #2563eb;
+  color: white;
+  padding: 6px 8px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.deleteBtn {
+  background: #ef4444;
+  color: white;
+  padding: 6px 8px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* Actions */
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.pagination {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+}
+
