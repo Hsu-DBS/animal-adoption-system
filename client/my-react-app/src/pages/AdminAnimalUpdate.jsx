@@ -132,6 +132,7 @@ export default function AdminAnimalUpdate() {
             type="number"
             name="age"
             value={form.age}
+            min={1}
             onChange={handleChange}
             required
           />
