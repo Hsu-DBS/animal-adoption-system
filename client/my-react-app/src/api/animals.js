@@ -34,3 +34,10 @@ export async function createAnimal(payload) {
   });
   return res.data.data;
 }
+
+// Update animal (multipart/form-data)
+export async function updateAnimal(animalId, payload) {
+  return await api.put(`/animal-management/animals/${animalId}`, payload, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+}
