@@ -28,7 +28,7 @@ export default function AdminNavbar() {
       <div className={styles.links}>
         {/* Link for navigation without page refresh */}
         <Link to="/admin/dashboard">Dashboard</Link>
-        <Link to="">Animals</Link>
+        <Link to="/admin/animals">Animals</Link>
         <Link to="">Applications</Link>
         <Link to="">Adopters</Link>
         <Link to="">My Profile</Link>

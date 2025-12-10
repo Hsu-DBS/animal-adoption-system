@@ -41,7 +41,6 @@ import ApplicationDetails from "./pages/ApplicationDetails";
 // Import Adopter Profile page component
 import AdopterProfile from "./pages/AdopterProfile";
 
-
 // ---------------------
 // Admin Routes
 // ---------------------
@@ -57,6 +56,9 @@ import AdminDashboard from "./pages/AdminDashboard";
 
 // Import the AdminProtectedRoute wrapper that checks if the admin is authenticated
 import AdminProtectedRoute from "./components/AdminProtectedRoute";
+
+// Import Admin Animals Management page component
+import AdminAnimals from "./pages/AdminAnimals";
 
 // Main App component that defines all application routes
 function App() {
@@ -159,6 +161,16 @@ function App() {
           <AdminProtectedRoute>
             <AdminNavbar />
             <AdminDashboard />
+          </AdminProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/admin/animals"
+        element={
+          <AdminProtectedRoute>
+            <AdminNavbar />
+            <AdminAnimals />
           </AdminProtectedRoute>
         }
       />
