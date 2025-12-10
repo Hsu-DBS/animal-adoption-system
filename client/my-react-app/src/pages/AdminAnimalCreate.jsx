@@ -132,7 +132,8 @@ export default function AdminAnimalCreate() {
           <label>Age</label>
           <input 
             type="number" 
-            name="age" 
+            name="age"
+            min={1}
             value={form.age} 
             onChange={handleChange} 
             required
@@ -181,8 +182,18 @@ export default function AdminAnimalCreate() {
           {/* Error message */}
           {error && <p className={styles.error}>{error}</p>}
 
-          {/* Submit button */}
-          <button className={styles.saveBtn}>Save Animal</button>
+          {/* Buttons */}
+            <div className={styles.buttonRow}>
+              <button className={styles.saveBtn}>Save Animal</button>
+  
+              <button 
+                type="button"
+                className={styles.cancelBtn}
+                onClick={() => navigate("/admin/animals")}
+              >
+                Cancel
+              </button>
+          </div>
 
         </form>
       </div>

@@ -199,6 +199,7 @@ def create_animal(
             Animal.name == request_data.name,
             Animal.breed == request_data.breed,
             Animal.species == request_data.species,
+            Animal.is_deleted.is_(False),
         )
         .first()
     )
