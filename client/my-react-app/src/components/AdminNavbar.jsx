@@ -33,7 +33,7 @@ export default function AdminNavbar() {
         <Link to="/admin/dashboard">Dashboard</Link>
         <Link to="/admin/animals">Animals</Link>
         <Link to="/admin/applications">Applications</Link>
-        <Link to="">Adopters</Link>
+        <Link to="/admin/adopters">Adopters</Link>
         <Link to="">My Profile</Link>
 
         {/* Logout button */}

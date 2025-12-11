@@ -4,7 +4,7 @@
 // Debouncing: https://dev.to/manishkc104/debounce-input-in-react-3726
 
 import { useEffect, useState } from "react";
-import { getAdopters } from "../api/user";
+import { getAdopters } from "../api/users";
 import styles from "./AdminAdopters.module.css";
 
 export default function AdminAdopters() {

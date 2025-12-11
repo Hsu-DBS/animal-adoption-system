@@ -72,6 +72,9 @@ import AdminApplications from "./pages/AdminApplications";
 // Import Application Update page component
 import AdminApplicationUpdate from "./pages/AdminApplicationUpdate";
 
+// Import Admin Adopters Management page component
+import AdminAdopters from "./pages/AdminAdopters";
+
 // Main App component that defines all application routes
 function App() {
   return (
@@ -223,6 +226,16 @@ function App() {
           <AdminProtectedRoute>
             <AdminNavbar />
             <AdminApplicationUpdate />
+          </AdminProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/admin/adopters"
+        element={
+          <AdminProtectedRoute>
+            <AdminNavbar />
+            <AdminAdopters />
           </AdminProtectedRoute>
         }
       />
