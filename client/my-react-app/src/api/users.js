@@ -37,3 +37,8 @@ export async function getAdopters(params) {
   const res = await api.get("/user-management/adopters", { params });
   return res.data.data;
 }
+
+// Delete adopter by ID
+export async function deleteAdopter(adopterId) {
+  return await api.delete(`/user-management/adopters/${adopterId}`);
+}
