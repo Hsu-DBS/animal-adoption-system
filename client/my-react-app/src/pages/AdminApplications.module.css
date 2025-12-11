@@ -100,3 +100,12 @@
   gap: 18px;
 }
 
+/* Export button */
+.exportBtn {
+  background: #0ea5e9;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
