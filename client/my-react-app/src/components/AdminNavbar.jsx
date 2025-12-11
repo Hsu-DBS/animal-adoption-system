@@ -34,7 +34,7 @@ export default function AdminNavbar() {
         <Link to="/admin/animals">Animals</Link>
         <Link to="/admin/applications">Applications</Link>
         <Link to="/admin/adopters">Adopters</Link>
-        <Link to="">My Profile</Link>
+        <Link to="/admin/profile">My Profile</Link>
 
         {/* Logout button */}
         <button className={styles.logoutBtn} onClick={handleLogout}>
