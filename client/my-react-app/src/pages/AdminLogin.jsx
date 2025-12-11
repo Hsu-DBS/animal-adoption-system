@@ -9,7 +9,7 @@
 import { useState } from "react"; 
 
 // API function for sending admin login request
-import { adminLogin } from "../api/admin"; 
+import { adminLogin } from "../api/admin_auth"; 
 
 // CSS Module for styling this page
 import styles from "./AdminLogin.module.css"; 

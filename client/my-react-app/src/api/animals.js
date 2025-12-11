@@ -1,6 +1,11 @@
 // axios instance with token + baseURL
 import api from "./axios";
 
+
+// ------------------------------------------
+//       Common APIs
+// ------------------------------------------
+
 // Fetch animals with pagination + filters
 export async function getAnimals(page = 1, limit = 12, search = "", gender = "", adoptionStatus = "") {
   // Send GET request + filters as query parameters
@@ -17,7 +22,6 @@ export async function getAnimals(page = 1, limit = 12, search = "", gender = "",
   return res.data;
 }
 
-
 // Fetch a single animal by ID
 export async function getAnimalById(animalId) {
   // Send GET request
@@ -26,6 +30,9 @@ export async function getAnimalById(animalId) {
   return res.data.data; 
 }
 
+// ------------------------------------------
+//       APIs for admin dashboard
+// ------------------------------------------
 
 // Create a new animal
 export async function createAnimal(payload) {

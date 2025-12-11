@@ -1,10 +1,20 @@
 import api from "./axios";
 
+
+// ------------------------------------------
+//       Common API
+// ------------------------------------------
+
 // Fetch current logged-in user info
 export async function getCurrentUser() {
   const res = await api.get("/user-management/current-user");
   return res.data.data;
 }
+
+
+// ------------------------------------------
+//       APIs for adopter portal
+// ------------------------------------------
 
 // Update adopter profile
 export async function updateAdopterProfile(adopterId, payload) {
