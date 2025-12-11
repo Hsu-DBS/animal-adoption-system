@@ -34,17 +34,31 @@ def get_dashboard_summary(
         Application.application_status == ApplicationStatus.Approved
     ).count()
 
+    # Rejected applications
+    rejected_applications = db.query(Application).filter(
+        Application.is_deleted.is_(False),
+        Application.application_status == ApplicationStatus.Rejected
+    ).count()
+
     # Count adopters
     total_adopters = db.query(User).filter(
         User.is_deleted.is_(False),
         User.user_type == UserType.Adopter
     ).count()
 
+    # Count admins
+    total_admins = db.query(User).filter(
+        User.is_deleted.is_(False),
+        User.user_type == UserType.Admin
+    ).count()
+
     data = {
         "total_animals": total_animals,
         "total_pending_applications": pending_applications,
         "total_approved_applications": approved_applications,
+        "total_rejected_applications": rejected_applications,
         "total_adopters": total_adopters,
+        "total_admins": total_admins,
     }
 
     return GeneralResponse(
