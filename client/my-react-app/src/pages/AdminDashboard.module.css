@@ -4,11 +4,16 @@
   padding: 20px;
 }
 
-.grid {
-  margin-top: 20px;
+h2 {
+  margin-bottom: 20px;
+}
+
+/* Two rows of cards */
+.row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 20px;
+  margin-bottom: 25px;
 }
 
 .card {

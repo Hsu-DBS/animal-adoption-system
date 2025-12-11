@@ -38,7 +38,7 @@ export default function AdminDashboard() {
       <h2>Dashboard Summary</h2>
 
       {/* Responsive grid layout for summary cards */}
-      <div className={styles.grid}>
+      <div className={styles.row}>
 
         {/* Total Animals Card */}
         <div className={styles.card}>
@@ -58,12 +58,24 @@ export default function AdminDashboard() {
           <p>{summary.total_approved_applications}</p>
         </div>
 
-        {/* Total Adopters Card */}
+        {/* Rejected Applications Card */}
+        <div className={styles.card}>
+          <h3>Rejected Applications</h3>
+          <p>{summary.total_rejected_applications}</p>
+        </div>
+      </div>
+
+      {/* Total Adopters Card */}
+      <div className={styles.row}>
         <div className={styles.card}>
           <h3>Total Adopters</h3>
           <p>{summary.total_adopters}</p>
         </div>
 
+        <div className={styles.card}>
+          <h3>Total Admins</h3>
+          <p>{summary.total_admins}</p>
+        </div>
       </div>
     </div>
   );
