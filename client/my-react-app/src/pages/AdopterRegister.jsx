@@ -13,7 +13,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 // Custom API function to call backend registration endpoint
-import { registerAdopter } from "../api/user";
+import { registerAdopter } from "../api/users";
 
 // Import CSS module for styling
 import styles from "./AdopterRegister.module.css";

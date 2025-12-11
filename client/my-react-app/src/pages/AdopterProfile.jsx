@@ -7,7 +7,7 @@
 import { useEffect, useState } from "react";
 
 // Import API functions for fetching and updating adopter data
-import { getCurrentUser, updateAdopterProfile } from "../api/user";
+import { getCurrentUser, updateAdopterProfile } from "../api/users";
 
 // Import CSS module for scoped styling
 import styles from "./AdopterProfile.module.css";
