@@ -42,3 +42,8 @@ export async function getAdopters(params) {
 export async function deleteAdopter(adopterId) {
   return await api.delete(`/user-management/adopters/${adopterId}`);
 }
+
+// Update admin profile
+export async function updateAdminProfile(userId, payload) {
+  return await api.put(`/user-management/users/${userId}`, payload);
+}
