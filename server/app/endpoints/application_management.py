@@ -288,6 +288,13 @@ def update_application_status(
             detail="Cannot modify a completed application"
         )
 
+    # Prevent approving application if animal is already adopted
+    if application.animal.adoption_status == AdoptionStatus.Adopted and request_data.application_status == ApplicationStatus.Approved:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Cannot approve application as the animal has already been adopted."
+        )
+
     # Update application status
     application.application_status = request_data.application_status
     application.updated_at = datetime.utcnow()
