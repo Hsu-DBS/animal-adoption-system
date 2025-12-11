@@ -3,6 +3,18 @@ import api from "./axios";
 
 
 // ------------------------------------
+// Common API
+// ------------------------------------
+
+// GET application by ID
+export async function getApplicationById(id) {
+  // Send GET request
+  const res = await api.get(`/application-management/applications/${id}`);
+  return res.data.data;
+}
+
+
+// ------------------------------------
 // Application API calls for adopters
 // ------------------------------------
 
@@ -20,13 +32,6 @@ export async function getMyApplications() {
   return res.data.data.applications;
 }
 
-// GET application by ID
-export async function getApplicationById(id) {
-  // Send GET request
-  const res = await api.get(`/application-management/applications/${id}`);
-  return res.data.data;
-}
-
 // UPDATE application (adopter can update reason or cancel application)
 export async function updateApplicationByAdopter(id, payload) {
   // Send PUT request
@@ -42,4 +47,15 @@ export async function updateApplicationByAdopter(id, payload) {
 export async function getApplications(params) {
   const res = await api.get("/application-management/applications", { params });
   return res.data;
+}
+
+// Update application status
+export async function updateApplicationStatus(applicationId, payload) {
+  return await api.patch(
+    `/application-management/applications/${applicationId}/status`,
+    payload,
+    {
+      headers: { "Content-Type": "application/json" }
+    }
+  );
 }
