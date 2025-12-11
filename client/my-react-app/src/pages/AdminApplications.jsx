@@ -9,10 +9,12 @@
 
 
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { getApplications } from "../api/applications";
 import styles from "./AdminApplications.module.css";
 
 export default function AdminApplications() {
+  const navigate = useNavigate();
 
   // Store the list of applications returned from API
   const [applications, setApplications] = useState([]);
@@ -231,7 +233,12 @@ export default function AdminApplications() {
 
                 {/* Action buttons */}
                 <td className={styles.actions}>
-                  <button className={styles.updateBtn}>Update</button>
+                  <button
+                    className={styles.updateBtn}
+                    onClick={() => navigate(`/admin/applications/update/${app.id}`)}
+                  >
+                    Update
+                  </button>
                   <button className={styles.deleteBtn}>Delete</button>
                 </td>
 
