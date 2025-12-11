@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Response, Query
 from sqlalchemy.orm import Session
+from sqlalchemy import or_
 from typing import Dict, Any
 from app.db.database import get_db
 from app.utils.auth_util import hash_password
@@ -29,9 +30,7 @@ router = APIRouter(prefix="/user-management", tags=["User Management"])
 def get_all_admin_users(
     page: int = Query(1, ge=1, description="Page number must be greater than 0)"),
     limit: int = Query(10, ge=1, le=100, description="Limit must be greater than 0"),
-    name: str | None = Query(None, description="Search by name"),
-    email: str | None = Query(None, description="Search by email"),
-    address: str | None = Query(None, description="Search by address"),
+    search: str | None = Query(None, description="Search by name or email or address"),
     db: Session = Depends(get_db),
     _ = Depends(has_permission("Admin")),
 ):
@@ -39,9 +38,7 @@ def get_all_admin_users(
     data_to_return = _get_all_users_by_role(
         page, 
         limit,
-        name,
-        email,
-        address,
+        search,
         UserType.Admin.value, 
         db
     )
@@ -143,9 +140,7 @@ def delete_user_admin(
 def get_all_adopters(
     page: int = Query(1, ge=1, description="Page number must be greater than 0)"),
     limit: int = Query(10, ge=1, le=100, description="Limit must be greater than 0"),
-    name: str | None = Query(None, description="Search by name"),
-    email: str | None = Query(None, description="Search by email"),
-    address: str | None = Query(None, description="Search by address"),
+    search: str | None = Query(None, description="Search by name or email or address"),
     db: Session = Depends(get_db),
     _ = Depends(has_permission("Admin")),
 ):
@@ -153,9 +148,7 @@ def get_all_adopters(
     data_to_return = _get_all_users_by_role(
         page, 
         limit,
-        name,
-        email,
-        address,
+        search,
         UserType.Adopter.value, 
         db
     )
@@ -342,9 +335,7 @@ def _create_new_account(
 def _get_all_users_by_role(
     page: int,
     limit: int,
-    name: str | None,
-    email: str | None,
-    address: str | None,
+    search: str | None,
     user_type: str,
     db: Session,
 ):
@@ -356,17 +347,15 @@ def _get_all_users_by_role(
         ).order_by(User.id.asc())
     )
 
-    #search by username
-    if name:
-        query = query.filter(User.name.ilike(f"%{name}%"))
-
-    #search by email
-    if email:
-        query = query.filter(User.email.ilike(f"%{email}%"))
-
-    #search by address
-    if address:
-        query = query.filter(User.address.ilike(f"%{address}%"))
+    #search by username or email or address
+    if search:
+        query = query.filter(
+            or_(
+                User.name.ilike(f"%{search}%"),
+                User.email.ilike(f"%{search}%"),
+                User.address.ilike(f"%{search}%")
+            )
+        )
 
     paginated_info = paginate_query(query, page, limit)
 

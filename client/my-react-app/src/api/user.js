@@ -26,3 +26,14 @@ export async function registerAdopter(payload) {
   const res = await api.post("/user-management/adopters", payload);
   return res.data;
 }
+
+
+// ------------------------------------------
+//       APIs for admin dashboard
+// ------------------------------------------
+
+// Fetch adopters with pagination + filters
+export async function getAdopters(params) {
+  const res = await api.get("/user-management/adopters", { params });
+  return res.data.data;
+}
