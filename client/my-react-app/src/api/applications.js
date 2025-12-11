@@ -59,3 +59,8 @@ export async function updateApplicationStatus(applicationId, payload) {
     }
   );
 }
+
+// Delete application
+export async function deleteApplication(applicationId) {
+  return await api.delete(`/application-management/applications/${applicationId}`);
+}
