@@ -78,6 +78,9 @@ import AdminAdopters from "./pages/AdminAdopters";
 // Import Admin Profile page component
 import AdminProfile from "./pages/AdminProfile";
 
+// Import Admin Management page component
+import AdminUsers from "./pages/AdminUsers";
+
 // Main App component that defines all application routes
 function App() {
   return (
@@ -249,6 +252,16 @@ function App() {
           <AdminProtectedRoute>
             <AdminNavbar />
             <AdminProfile />
+          </AdminProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/admin/users"
+        element={
+          <AdminProtectedRoute>
+            <AdminNavbar />
+            <AdminUsers />
           </AdminProtectedRoute>
         }
       />
