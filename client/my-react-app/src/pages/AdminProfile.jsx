@@ -4,7 +4,7 @@
 
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getCurrentUser, updateAdminProfile } from "../api/users";
+import { getCurrentUser, updateAdmin } from "../api/users";
 import styles from "./AdminProfile.module.css";
 
 export default function AdminProfile() {
@@ -116,7 +116,7 @@ export default function AdminProfile() {
     }
 
     // Send API request to update admin profile
-    await updateAdminProfile(userId, payload);
+    await updateAdmin(userId, payload);
 
     alert("Profile updated. Please log in again.");
 
