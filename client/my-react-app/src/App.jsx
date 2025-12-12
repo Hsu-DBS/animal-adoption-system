@@ -81,6 +81,9 @@ import AdminProfile from "./pages/AdminProfile";
 // Import Admin Management page component
 import AdminUsers from "./pages/AdminUsers";
 
+// Import Admin Create page component
+import AdminUserCreate from "./pages/AdminUserCreate";
+
 // Main App component that defines all application routes
 function App() {
   return (
@@ -262,6 +265,16 @@ function App() {
           <AdminProtectedRoute>
             <AdminNavbar />
             <AdminUsers />
+          </AdminProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/admin/users/create"
+        element={
+          <AdminProtectedRoute>
+            <AdminNavbar />
+            <AdminUserCreate />
           </AdminProtectedRoute>
         }
       />

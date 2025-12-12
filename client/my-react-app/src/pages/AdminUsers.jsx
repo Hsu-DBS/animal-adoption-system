@@ -8,10 +8,12 @@
 
 
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { getAdminUsers, deleteAdminUser } from "../api/users";
 import styles from "./AdminUsers.module.css";
 
 export default function AdminUsers() {
+  const navigate = useNavigate();
 
   // Store list of admin users
   const [admins, setAdmins] = useState([]);
@@ -147,6 +149,7 @@ export default function AdminUsers() {
         {/* Create new admin */}
         <button
           className={styles.createBtn}
+          onClick={() => navigate("/admin/users/create")}
         >
           + Create Admin
         </button>
