@@ -182,6 +182,7 @@ export default function AdminUsers() {
                   {/* Update Admin */}
                   <button
                     className={styles.updateBtn}
+                    onClick={() => navigate(`/admin/users/update/${u.id}`)}
                   >
                     Update
                   </button>

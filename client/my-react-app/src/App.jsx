@@ -84,6 +84,9 @@ import AdminUsers from "./pages/AdminUsers";
 // Import Admin Create page component
 import AdminUserCreate from "./pages/AdminUserCreate";
 
+// Import Admin Update page component
+import AdminUserUpdate from "./pages/AdminUserUpdate";
+
 // Main App component that defines all application routes
 function App() {
   return (
@@ -275,6 +278,16 @@ function App() {
           <AdminProtectedRoute>
             <AdminNavbar />
             <AdminUserCreate />
+          </AdminProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/admin/users/update/:userId"
+        element={
+          <AdminProtectedRoute>
+            <AdminNavbar />
+            <AdminUserUpdate />
           </AdminProtectedRoute>
         }
       />
