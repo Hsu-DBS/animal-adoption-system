@@ -58,3 +58,8 @@ export async function getAdminUsers(params) {
 export async function deleteAdminUser(userId) {
   return await api.delete(`/user-management/users/${userId}`);
 }
+
+// Create a new admin account
+export async function createAdmin(payload) {
+  return await api.post("/user-management/users", payload);
+}
