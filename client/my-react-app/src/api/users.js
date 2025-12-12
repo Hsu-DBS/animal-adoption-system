@@ -53,3 +53,8 @@ export async function getAdminUsers(params) {
   const res = await api.get("/user-management/users", { params });
   return res.data.data;
 }
+
+// Delete admin by ID
+export async function deleteAdminUser(userId) {
+  return await api.delete(`/user-management/users/${userId}`);
+}
