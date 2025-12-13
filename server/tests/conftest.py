@@ -88,6 +88,8 @@ def create_test_user(name, email, phone, address, password, role):
 
     return {
         "id": user.id,
+        "email": email,
+        "password": password,
     }
 
 
