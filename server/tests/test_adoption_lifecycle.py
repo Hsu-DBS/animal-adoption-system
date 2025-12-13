@@ -78,3 +78,52 @@ def test_create_animal(client, test_admin):
 
     # Basic assertion
     assert animal_id is not None
+
+
+# TEST 2: Submit adoption application
+def test_submit_application(client, test_admin, test_adopter):
+
+    # Login as admin to obtain JWT token bcuz admin is required to create animal
+    admin_headers = login_user(
+        client,
+        test_admin["email"],
+        test_admin["password"],
+        role="admin",
+    )
+
+    # Create a test animal that can be adopted
+    animal_id = create_animal(
+        client,
+        admin_headers,
+        {
+            "name": "Apply Dog",
+            "species": "Dog",
+            "breed": "Beagle",
+            "age": 2,
+            "gender": "Male",
+            "description": "Dog for application test",
+            "adoption_status": "Available",
+        },
+    )
+
+    # Login as adopter to obtain JWT token & to submit adoption application
+    adopter_headers = login_user(
+        client,
+        test_adopter["email"],
+        test_adopter["password"],
+        role="adopter",
+    )
+
+    # Submit adoption application for the created animal
+    response = client.post(
+        "/application-management/applications",
+        headers=adopter_headers,
+        json={
+            "animal_id": animal_id,
+            "reason": "I want to adopt this dog",
+        },
+    )
+
+    # Verify that the application was created successfully
+    assert response.status_code == 201
+    assert response.json()["message"] == "Application submitted successfully"
