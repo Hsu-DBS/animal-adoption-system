@@ -14,7 +14,7 @@ export default function Navbar() {
   // Handler for logout button click
   const handleLogout = () => {
     logout();              // clear token from AuthContext + localStorage             
-    window.location.href = "/login"; // redirect to login page
+    window.location.href = "/#/login"; // redirect to login page
   };
 
   return (

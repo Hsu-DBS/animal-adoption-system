@@ -134,9 +134,9 @@ api.interceptors.response.use(
 
       // Redirect based on role
       if (role === "Admin") {
-        window.location.href = "/admin/login";
+        window.location.href = "/#/admin/login";
       } else {
-        window.location.href = "/login";
+        window.location.href = "/#/login";
       }
     }
 

@@ -100,7 +100,7 @@ export default function AnimalDetails() {
           <button
             className={styles.adoptButton}
             // React Router alternative: useNavigate()
-            onClick={() => window.location.href = `/adopt/${animal.id}`}
+            onClick={() => window.location.href = `/#/adopt/${animal.id}`}
           >
             Adopt
           </button>

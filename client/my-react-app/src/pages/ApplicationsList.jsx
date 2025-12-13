@@ -77,7 +77,7 @@ export default function ApplicationsList() {
             {/* Navigate to Application Details page */}
             <button
               className={styles.detailsButton}
-              onClick={() => window.location.href = `/applications/${app.id}`}
+              onClick={() => window.location.href = `/#/applications/${app.id}`}
             >
               View Details
             </button>

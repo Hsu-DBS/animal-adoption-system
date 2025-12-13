@@ -41,7 +41,7 @@ export default function LoginPage() {
       login(res.data.data.access_token);
 
       // Redirect user to homepage after successful login
-      window.location.href = "/";
+      window.location.href = "/#/";
     } catch (err) {
       // Show error message if login fails
       setError("Invalid email or password");
