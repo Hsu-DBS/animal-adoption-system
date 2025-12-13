@@ -11,7 +11,7 @@
 
 import { useEffect, useState } from "react";
 import { getAnimals } from "../api/animals";
-import styles from "./AdminAnimals.module.css";
+import styles from "../styles/AdminAnimals.module.css";
 import { useNavigate } from "react-router-dom";
 import { deleteAnimal } from "../api/animals";
 

@@ -10,7 +10,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAdminUsers, deleteAdminUser } from "../api/users";
-import styles from "./AdminUsers.module.css";
+import styles from "../styles/AdminUsers.module.css";
 
 export default function AdminUsers() {
   const navigate = useNavigate();

@@ -7,7 +7,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getApplicationById, updateApplicationStatus} from "../api/applications";
-import styles from "./AdminApplicationUpdate.module.css";
+import styles from "../styles/AdminApplicationUpdate.module.css";
 
 export default function AdminApplicationUpdate() {
   // Get application ID from the URL

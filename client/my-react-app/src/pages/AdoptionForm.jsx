@@ -9,7 +9,7 @@ import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { submitApplication } from "../api/applications"; // API call for submitting an application
 import { getAnimalById } from "../api/animals"; // API call for fetching a single animal
-import styles from "./AdoptionForm.module.css"; // CSS module for styling
+import styles from "../styles/AdoptionForm.module.css"; // CSS module for styling
 
 export default function AdoptionForm() {
 

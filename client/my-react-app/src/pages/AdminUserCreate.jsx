@@ -7,7 +7,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createAdmin } from "../api/users";
-import styles from "./AdminUserCreate.module.css";
+import styles from "../styles/AdminUserCreate.module.css";
 
 export default function AdminUserCreate() {
   const navigate = useNavigate();

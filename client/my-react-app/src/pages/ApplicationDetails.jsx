@@ -14,7 +14,7 @@ import {
   getApplicationById,
   updateApplicationByAdopter,
 } from "../api/applications";
-import styles from "./ApplicationDetails.module.css";
+import styles from "../styles/ApplicationDetails.module.css";
 
 export default function ApplicationDetails() {
 

@@ -11,7 +11,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAnimals } from "../api/animals";
-import styles from "./AnimalsList.module.css";
+import styles from "../styles/AnimalsList.module.css";
 
 export default function AnimalsList() {
   // Nvaigation hook

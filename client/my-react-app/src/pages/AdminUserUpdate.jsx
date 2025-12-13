@@ -9,7 +9,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getAdminById, updateAdmin } from "../api/users";
-import styles from "./AdminUserUpdate.module.css";
+import styles from "../styles/AdminUserUpdate.module.css";
 
 export default function AdminUserUpdate() {
   const navigate = useNavigate(); // Used to redirect

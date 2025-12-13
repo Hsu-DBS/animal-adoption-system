@@ -21,7 +21,7 @@ import { useNavigate } from "react-router-dom";
 import { getAnimalById } from "../api/animals";
 
 // Import CSS styles using CSS Modules
-import styles from "./AnimalDetails.module.css";
+import styles from "../styles/AnimalDetails.module.css";
 
 export default function AnimalDetails() {
   // Nvaigation hook

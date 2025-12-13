@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 import { getDashboardSummary } from "../api/adminDashboard";
 
 // Import CSS
-import styles from "./AdminDashboard.module.css";
+import styles from "../styles/AdminDashboard.module.css";
 
 export default function AdminDashboard() {
   // React state to store summary data returned from backend

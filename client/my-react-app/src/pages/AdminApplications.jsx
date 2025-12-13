@@ -11,7 +11,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getApplications, deleteApplication } from "../api/applications";
-import styles from "./AdminApplications.module.css";
+import styles from "../styles/AdminApplications.module.css";
 
 export default function AdminApplications() {
   const navigate = useNavigate();

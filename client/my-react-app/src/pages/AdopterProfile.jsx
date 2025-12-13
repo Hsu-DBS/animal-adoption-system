@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import { getCurrentUser, updateAdopterProfile } from "../api/users";
 
 // Import CSS module for scoped styling
-import styles from "./AdopterProfile.module.css";
+import styles from "../styles/AdopterProfile.module.css";
 
 export default function AdopterProfile() {
 

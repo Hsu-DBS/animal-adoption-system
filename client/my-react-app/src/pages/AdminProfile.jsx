@@ -5,7 +5,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getCurrentUser, updateAdmin } from "../api/users";
-import styles from "./AdminProfile.module.css";
+import styles from "../styles/AdminProfile.module.css";
 
 export default function AdminProfile() {
 

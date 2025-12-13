@@ -8,7 +8,7 @@
 
 import { useEffect, useState } from "react";
 import { getMyApplications } from "../api/applications"; 
-import styles from "./ApplicationsList.module.css"; // CSS module import
+import styles from "../styles/ApplicationsList.module.css"; // CSS module import
 
 export default function ApplicationsList() {
 

@@ -16,7 +16,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { registerAdopter } from "../api/users";
 
 // Import CSS module for styling
-import styles from "./AdopterRegister.module.css";
+import styles from "../styles/AdopterRegister.module.css";
 
 export default function RegisterPage() {
 

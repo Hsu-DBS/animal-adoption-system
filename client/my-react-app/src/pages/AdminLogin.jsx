@@ -12,7 +12,7 @@ import { useState } from "react";
 import { adminLogin } from "../api/admin_auth"; 
 
 // CSS Module for styling this page
-import styles from "./AdminLogin.module.css"; 
+import styles from "../styles/AdminLogin.module.css"; 
 
 // Hook for programmatic navigation
 import { useNavigate } from "react-router-dom";

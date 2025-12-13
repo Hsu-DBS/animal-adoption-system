@@ -9,7 +9,7 @@
 import { useEffect, useState } from "react";
 import { getAnimalById } from "../api/animals";
 import { updateAnimal } from "../api/animals";
-import styles from "./AdminAnimalCreate.module.css"; // reuse same styles from animal create page
+import styles from "../styles/AdminAnimalCreate.module.css"; // reuse same styles from animal create page
 import { useNavigate, useParams } from "react-router-dom";
 
 export default function AdminAnimalUpdate() {

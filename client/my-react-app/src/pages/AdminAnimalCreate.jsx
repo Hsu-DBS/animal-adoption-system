@@ -6,7 +6,7 @@
 
 import { useState } from "react";
 import { createAnimal } from "../api/animals";
-import styles from "./AdminAnimalCreate.module.css";
+import styles from "../styles/AdminAnimalCreate.module.css";
 import { useNavigate } from "react-router-dom";
 
 export default function AdminAnimalCreate() {

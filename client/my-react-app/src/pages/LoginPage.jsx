@@ -15,7 +15,7 @@ import api from "../api/axios";
 import { AuthContext } from "../context/AuthContext";
 
 //  Import CSS module for styling
-import styles from "./LoginPage.module.css";
+import styles from "../styles/LoginPage.module.css";
 
 export default function LoginPage() {
   // Extract the login function from AuthContext

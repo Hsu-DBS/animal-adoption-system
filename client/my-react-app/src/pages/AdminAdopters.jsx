@@ -10,7 +10,7 @@
 
 import { useEffect, useState } from "react";
 import { getAdopters, deleteAdopter } from "../api/users";
-import styles from "./AdminAdopters.module.css";
+import styles from "../styles/AdminAdopters.module.css";
 
 export default function AdminAdopters() {
   // Store the list of adopters from backend
