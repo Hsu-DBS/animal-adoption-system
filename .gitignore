@@ -44,6 +44,9 @@ lerna-debug.log*
 *.png
 *.webp
 
+# allow logo explicitly
+!client/my-react-app/public/logo.png
+
 # ───────────────────────────
 # macOS Finder
 # ───────────────────────────
