@@ -127,3 +127,79 @@ def test_submit_application(client, test_admin, test_adopter):
     # Verify that the application was created successfully
     assert response.status_code == 201
     assert response.json()["message"] == "Application submitted successfully"
+
+
+# TEST 3: Update application status
+def test_update_application_status(client, test_admin, test_adopter):
+
+    # Admin login
+    admin_headers = login_user(
+        client,
+        test_admin["email"],
+        test_admin["password"],
+        role="admin"
+    )
+
+    # Admin creates an animal
+    animal_id = create_animal(
+        client,
+        admin_headers,
+        {
+            "name": "Approve Dog",
+            "species": "Dog",
+            "breed": "Husky",
+            "age": 4,
+            "gender": "Male",
+            "description": "Dog for approval test",
+            "adoption_status": "Available",
+        }
+    )
+
+    # Adopter login
+    adopter_headers = login_user(
+        client,
+        test_adopter["email"],
+        test_adopter["password"],
+        role="adopter"
+    )
+
+    # Adopter submits adoption application
+    app_response = client.post(
+        "/application-management/applications",
+        headers=adopter_headers,
+        json={
+            "animal_id": animal_id,
+            "reason": "I want this dog",
+        },
+    )
+
+    # Verify application creation success
+    assert app_response.status_code == 201
+
+    # Extract application ID from response
+    application_id = app_response.json()["data"]["id"]
+
+    # Admin approves the application
+    update_response = client.patch(
+        f"/application-management/applications/{application_id}/status",
+        headers=admin_headers,
+        json={"application_status": "Approved"},
+    )
+
+    # Verify successful status update
+    assert update_response.status_code == 204
+
+    # Verify animal status is updated to "Adopted"
+    animals_res = client.get(
+        "/animal-management/animals",
+        headers=admin_headers,
+    )
+
+    # Extract animals list from response
+    animals = animals_res.json()["data"]["animals"]
+
+    # Find the updated animal by ID
+    updated_animal = next(a for a in animals if a["id"] == animal_id)
+
+    # Confirm adoption status has changed correctly
+    assert updated_animal["adoption_status"] == "Adopted"
