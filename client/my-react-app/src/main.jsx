@@ -13,8 +13,7 @@ import ReactDOM from 'react-dom/client';
 // Import the main App component of frontend
 import App from './App.jsx';
 
-// React Router's BrowserRouter handles client-side routing (URLs without page reload)
-import { BrowserRouter } from 'react-router-dom';
+import { HashRouter } from "react-router-dom";
 
 // Import global AuthProvider (manages JWT token, login state, logout)
 import { AuthProvider } from './context/AuthContext.jsx';
@@ -28,8 +27,8 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   // StrictMode helps catch errors in development
   <React.StrictMode>
 
-    {/* BrowserRouter enables routing throughout the app */}
-    <BrowserRouter>
+    {/* HashRouter enables routing throughout the app */}
+    <HashRouter>
 
       {/* AuthProvider wraps the entire app and provides authentication state */}
       <AuthProvider>
@@ -38,6 +37,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         <App />
 
       </AuthProvider>
-    </BrowserRouter>
+    </HashRouter>
   </React.StrictMode>
 );
