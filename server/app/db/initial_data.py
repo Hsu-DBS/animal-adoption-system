@@ -27,7 +27,7 @@ def create_first_admin():
             password=pwd_context.hash("Admin@123"),
             phone="09971257432",
             address="Yangon Animal Shelter",
-            user_type=UserType.Admin,
+            user_type=UserType.Admin.value,
             created_by="System"
         )
         
