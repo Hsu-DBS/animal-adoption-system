@@ -3,13 +3,19 @@
 # Dependencies & Overrides: https://fastapi.tiangolo.com/advanced/testing-dependencies/#use-the-app-dependency-overrides-attribute
 # SQLite: https://docs.sqlalchemy.org/en/20/dialects/sqlite.html#threading-pooling-behavior
 # Pytest - Fixtures: https://docs.pytest.org/en/stable/how-to/fixtures.html
+# Pytest - Fixture scopes: https://docs.pytest.org/en/stable/how-to/fixtures.html#fixture-scopes
+
 
 import pytest
+from datetime import datetime
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from fastapi.testclient import TestClient
 from app.main import app
 from app.db.database import Base, get_db
+from app.models.enums import UserType
+from app.models.user import User
+from app.utils.auth_util import hash_password
 
 
 # test database url
@@ -57,3 +63,55 @@ def setup_test_db():
 @pytest.fixture()
 def client():
     return TestClient(app)
+
+
+# common function to create users
+def create_test_user(name, email, phone, address, password, role):
+
+    user = User(
+        name=name,
+        email=email,
+        phone=phone,
+        address=address,
+        password=hash_password(password),
+        user_type=role,
+        is_deleted=False,
+        created_at=datetime.utcnow(),
+        created_by="system",
+    )
+
+    db = TestingSessionLocal()
+    db.add(user)
+    db.commit()
+    db.refresh(user)
+    db.close()
+
+    return {
+        "id": user.id,
+    }
+
+
+# create default admin account
+@pytest.fixture(scope="session")
+def test_admin():
+    return create_test_user(
+        name="Admin",
+        email="admin@gmail.com",
+        phone="0912345678",
+        address="Dublin",
+        password="Admin@123",
+        role=UserType.Admin.value,
+    )
+
+
+# create default adopter account
+@pytest.fixture(scope="session")
+def test_adopter():
+    return create_test_user(
+        name="Adopter",
+        email="adopter@gmail.com",
+        phone="0998765432",
+        address="Dublin",
+        password="Adopter@123",
+        role=UserType.Adopter.value,
+    )
