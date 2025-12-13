@@ -1,5 +1,10 @@
+# https://docs.python.org/3/library/pathlib.html
+# https://www.w3schools.com/python/ref_module_pathlib.asp
+# https://stackoverflow.com/questions/76451315/difference-between-pathlib-path-resolve-and-pathlib-path-parent
+
 import os
 import json
+from pathlib import Path
 from dotenv import load_dotenv
 from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File, Form, Query, Response
@@ -178,18 +183,26 @@ def create_animal(
             detail="Invalid image format. Only .jpg, .jpeg, .png, .webp are allowed."
         )
 
-    #Ensure the image directory exists
-    os.makedirs(IMAGE_DIR, exist_ok=True)
+    # Resolve the absolute base directory of the app
+    BASE_DIR = Path(__file__).resolve().parent.parent
 
-    #Generate unique filename
-    filename = f"{int(datetime.utcnow().timestamp())}_{animal_image.filename}"
-    file_path = os.path.join(IMAGE_DIR, filename)
+    # Define the directory for storing animal images
+    IMAGE_DIR = BASE_DIR / "src" / "images"
 
-    #Save image file
+    # Create the images directory if it does not exist
+    IMAGE_DIR.mkdir(parents=True, exist_ok=True)
+
+    # generate filename
+    filename = f"{int(datetime.utcnow().timestamp())}.{ext}"
+
+    # full filepath
+    file_path = IMAGE_DIR / filename
+
+    # Save the uploaded image file
     with open(file_path, "wb") as f:
         f.write(animal_image.file.read())
 
-    #Build the image URL used by UI
+    # Build the image URL to be stored in the database
     photo_url = f"/images/{filename}"
 
     #Prevent duplicate animal records
